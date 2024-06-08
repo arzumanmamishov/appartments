@@ -2,12 +2,12 @@ import 'package:apartments/app/constans/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ListTaskDateData {
+class ListAppartDateData {
   final DateTime date;
   final String label;
   final String jobdesk;
 
-  const ListTaskDateData({
+  const ListAppartDateData({
     required this.date,
     required this.label,
     required this.jobdesk,
@@ -22,7 +22,7 @@ class ListTaskDate extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final ListTaskDateData data;
+  final ListAppartDateData data;
   final Function() onPressed;
   final Color? dividerColor;
 

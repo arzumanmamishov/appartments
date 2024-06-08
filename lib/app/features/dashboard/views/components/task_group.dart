@@ -9,8 +9,8 @@ class _TaskGroup extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
-  final List<ListTaskDateData> data;
-  final Function(int index, ListTaskDateData data) onPressed;
+  final List<ListAppartDateData> data;
+  final Function(int index, ListAppartDateData data) onPressed;
 
   @override
   Widget build(BuildContext context) {

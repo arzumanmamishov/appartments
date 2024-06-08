@@ -67,46 +67,46 @@ class DashboardController extends GetxController {
 
   final taskGroup = [
     [
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 2, hours: 10)),
         label: "5 posts on instagram",
         jobdesk: "Marketing",
       ),
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 2, hours: 11)),
         label: "Platform Concept",
         jobdesk: "Animation",
       ),
     ],
     [
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 4, hours: 5)),
         label: "UI UX Marketplace",
         jobdesk: "Design",
       ),
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 4, hours: 6)),
         label: "Create Post For App",
         jobdesk: "Marketing",
       ),
     ],
     [
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 6, hours: 5)),
         label: "2 Posts on Facebook",
         jobdesk: "Marketing",
       ),
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 6, hours: 6)),
         label: "Create Icon App",
         jobdesk: "Design",
       ),
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 6, hours: 8)),
         label: "Fixing Error Payment",
         jobdesk: "Programmer",
       ),
-      ListTaskDateData(
+      ListAppartDateData(
         date: DateTime.now().add(const Duration(days: 6, hours: 10)),
         label: "Create Form Interview",
         jobdesk: "System Analyst",
@@ -130,7 +130,7 @@ class DashboardController extends GetxController {
   void onPressedAssignTask(int index, ListTaskAssignedData data) {}
   void onPressedMemberTask(int index, ListTaskAssignedData data) {}
   void onPressedCalendar() {}
-  void onPressedTaskGroup(int index, ListTaskDateData data) {}
+  void onPressedTaskGroup(int index, ListAppartDateData data) {}
 
   void openDrawer() {
     if (scafoldKey.currentState != null) {
