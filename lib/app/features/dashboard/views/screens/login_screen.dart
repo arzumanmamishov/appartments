@@ -2,6 +2,9 @@ import 'package:apartments/app/api/client_api.dart';
 import 'package:apartments/app/features/dashboard/views/screens/dashboard_screen.dart';
 import 'package:apartments/app/utils/services/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jsonwebtoken_decode/jsonwebtoken_decode.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -28,12 +31,28 @@ class _LoginScreenState extends State<LoginScreen> {
         usernameController.text,
         passwordController.text,
       );
-      print(res);
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      if (res['status'] != 401) {
+        String accessToken = res['token'];
+        String token = accessToken;
 
-      if (res['ErrorCode'] == null) {
-        String accessToken = res['traceId'];
-        print(accessToken);
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+
+        bool isTokenExpired = JwtDecoder.isExpired(token);
+
+        if (isTokenExpired == true) {
+          Get.toNamed('/loginScreen');
+        }
+
+        await getUserData(token);
+        // DateTime expirationDate = JwtDecoder.getExpirationDate(token);
+
+        // print(expirationDate);
+
+        // Duration tokenTime = JwtDecoder.getTokenTime(token);
+
+        // print(tokenTime.inDays);
+        // Get.toNamed('/dashboard');
         // Navigator.push(context,
         //     MaterialPageRoute(builder: (context) =>  const DashboardScreen()));
       } else {
@@ -43,6 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
       }
     }
+  }
+
+  getUserData(String token) async {
+    dynamic userRes;
+    userRes = await _apiClient.getUserProfileData(token);
+    print(userRes);
   }
 
   @override

@@ -35,7 +35,7 @@ class ApiClient {
   Future<dynamic> getUserProfileData(String accessToken) async {
     try {
       Response response = await _dio.get(
-        'https://api.loginradius.com/identity/v2/auth/account',
+        'https://realtor.azurewebsites.net/api/CustomerCards',
         // queryParameters: {'apikey': ApiSecret.apiKey},
         options: Options(
           headers: {'Authorization': 'Bearer $accessToken'},

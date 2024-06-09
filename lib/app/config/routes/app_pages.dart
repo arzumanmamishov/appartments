@@ -1,4 +1,5 @@
 import 'package:apartments/app/features/dashboard/views/screens/apartment_details.dart';
+import 'package:apartments/app/features/dashboard/views/screens/login_screen.dart';
 
 import '../../features/dashboard/views/screens/dashboard_screen.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,11 @@ class AppPages {
     GetPage(
       name: _Paths.appartDetails,
       page: () => const ApartmentDetails(),
+      binding: DetailsdBinding(),
+    ),
+    GetPage(
+      name: _Paths.loginScreen,
+      page: () => const LoginScreen(),
       binding: DetailsdBinding(),
     ),
   ];

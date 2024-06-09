@@ -1,14 +1,22 @@
 import 'dart:ui';
 
+import 'package:apartments/app/features/dashboard/views/screens/login_screen.dart';
 import 'package:apartments/app/utils/helpers/navigation_services.dart';
+import 'package:provider/provider.dart';
 
 import 'app/config/routes/app_pages.dart';
 import 'app/config/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'app/providers/appartment_provider.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => AppartDetailsListener()),
+    ]),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,6 +30,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.basic,
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,
+      // home: const LoginScreen(),
       scrollBehavior: CustomScrollBehaviour(),
       debugShowCheckedModeBanner: false,
     );
