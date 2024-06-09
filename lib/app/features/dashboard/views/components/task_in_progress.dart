@@ -13,11 +13,6 @@ class TaskInProgress extends StatefulWidget {
 
 class TaskInProgressState extends State<TaskInProgress> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(kBorderRadius * 2),
