@@ -42,7 +42,6 @@ Future<ApartmentModelList> fetchDataFromAzure() async {
     );
     final data = response.data;
     appartmentList = ApartmentModelList.fromJson(data);
-    print(appartmentList);
     return appartmentList;
   } on DioError catch (e) {
     return e.response!.data;
