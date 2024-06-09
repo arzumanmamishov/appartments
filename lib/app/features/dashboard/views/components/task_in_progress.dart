@@ -2,6 +2,7 @@ import 'package:apartments/app/constans/app_constants.dart';
 import 'package:apartments/app/api/all_apartments.dart';
 import 'package:apartments/app/models/get_all_appart.dart';
 import 'package:apartments/app/shared_components/card_task.dart';
+import 'package:apartments/app/utils/animations/show_up_animation.dart';
 import 'package:flutter/material.dart';
 
 class TaskInProgress extends StatefulWidget {
@@ -22,25 +23,38 @@ class TaskInProgressState extends State<TaskInProgress> {
             builder: (BuildContext context,
                 AsyncSnapshot<ApartmentModelList> snapshot) {
               if (!snapshot.hasData) {
-                return Container();
-              } else {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: snapshot.data!.apartmentModel.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: kSpacing / 2),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 80.0),
+                    child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
+                }
+              }
+              return ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                physics: const BouncingScrollPhysics(),
+                itemCount: snapshot.data!.apartmentModel.length,
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: kSpacing / 2),
+                  child: ShowUp(
+                    delay: 400,
                     child: CardTask(
                       data: snapshot.data!.apartmentModel[index],
-                      primary: Color.fromARGB(255, 105, 188, 255),
+                      primary: const Color.fromARGB(255, 105, 188, 255),
                       onPrimary: Colors.white,
                     ),
                   ),
-                );
+                ),
+              );
 
-                // return Container();
-              }
+              // return Container();
             }),
       ),
     );
