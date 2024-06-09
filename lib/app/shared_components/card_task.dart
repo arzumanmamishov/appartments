@@ -89,7 +89,7 @@ class CardTask extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               child: Image.network(
-                data.city,
+                data.city ?? '',
                 fit: BoxFit.contain,
                 height: 150.0,
                 width: 150.0,
@@ -101,7 +101,7 @@ class CardTask extends StatelessWidget {
 
   Widget _buildLabel() {
     return Text(
-      data.city,
+      data.city ?? '',
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w800,
@@ -121,7 +121,7 @@ class CardTask extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Text(
-        data.contactPerson,
+        data.contactPerson ?? '',
         style: TextStyle(
           color: onPrimary,
           fontSize: 10,
@@ -145,7 +145,7 @@ class CardTask extends StatelessWidget {
     return _IconLabel(
       color: onPrimary,
       iconData: EvaIcons.clockOutline,
-      label: data.phone,
+      label: data.phone ?? '',
     );
   }
 

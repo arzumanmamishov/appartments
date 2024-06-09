@@ -1,7 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:apartments/app/features/dashboard/views/components/text_form_fiel_decoration.dart';
+import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/responsive_builder.dart';
+import 'package:apartments/app/utils/services/apartment_image_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddingNewApartment extends StatefulWidget {
   const AddingNewApartment({Key? key}) : super(key: key);
@@ -16,20 +24,42 @@ class _AddingNewApartmentState extends State<AddingNewApartment> {
     return Scaffold(
         body: SafeArea(
             child: ResponsiveBuilder(mobileBuilder: (context, constraints) {
-      return const SingleChildScrollView(child: TextFormForAddingNewApt());
+      return const SingleChildScrollView(
+          child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+        child: Column(
+          children: [
+            FormsList(),
+            TextFormForAddingNewApt(),
+          ],
+        ),
+      ));
     }, tabletBuilder: (context, constraints) {
       return SingleChildScrollView(
           controller: ScrollController(),
-          child: const TextFormForAddingNewApt());
+          child: Container(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: const Column(
+                children: [
+                  FormsList(),
+                  TextFormForAddingNewApt(),
+                ],
+              )));
     }, desktopBuilder: (context, constraints) {
-      return Center(
-        child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            controller: ScrollController(),
+      return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          controller: ScrollController(),
+          child: Center(
             child: Container(
                 constraints: const BoxConstraints(maxWidth: 400),
-                child: const FormsList())),
-      );
+                padding: const EdgeInsets.symmetric(vertical: 55),
+                child: const Column(
+                  children: [
+                    FormsList(),
+                    TextFormForAddingNewApt(),
+                  ],
+                )),
+          ));
     })));
   }
 }
@@ -53,7 +83,6 @@ class FormsList extends StatelessWidget {
         SizedBox(
           height: 20,
         ),
-        TextFormForAddingNewApt(),
       ],
     );
   }
@@ -70,32 +99,43 @@ class TextFormForAddingNewApt extends StatefulWidget {
 class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
   final String apiUrl = 'https://realtor.azurewebsites.net/api/RentObjects';
   final TextEditingController contactPerson = TextEditingController();
+  final TextEditingController address = TextEditingController();
   final TextEditingController city = TextEditingController();
   final TextEditingController region = TextEditingController();
-  String result = ''; //
+  final TextEditingController postalCode = TextEditingController();
+  final TextEditingController price = TextEditingController();
+  final TextEditingController type = TextEditingController();
+  final TextEditingController description = TextEditingController();
+  final TextEditingController floor = TextEditingController();
+  final TextEditingController phone = TextEditingController();
+  final TextEditingController comments = TextEditingController();
 
+  String result = ''; //
+  List<String> imagesDownloadedList = [];
   Future<void> postData() async {
     try {
       print('started');
+      String uuid = const Uuid().v4();
+
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'id': '343434',
+          'id': uuid,
           'contactPerson': contactPerson.text,
           'city': city.text,
           'region': region.text,
-          "address": "ef",
-          "postalCode": "ef",
-          "price": "ef",
-          "type": "ef",
-          "description": "ef",
-          "comment": "ef",
-          "phone": "ef",
-          "floor": "ef",
-          "photos": ["string"],
+          "address": address.text,
+          "postalCode": postalCode.text,
+          "price": price.text,
+          "type": type.text,
+          "description": description.text,
+          "comment": comments.text,
+          "phone": phone.text,
+          "floor": floor.text,
+          "photos": ['dddd'],
         }),
       );
 
@@ -117,6 +157,28 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     }
   }
 
+  uploadFile() async {
+    AppartDetailsListener profileDetailsListener =
+        Provider.of<AppartDetailsListener>(context, listen: false);
+    var postUri = Uri.parse("apiUrl");
+
+    http.MultipartRequest request = http.MultipartRequest("POST", postUri);
+    for (var img in profileDetailsListener.getXfileList) {
+      File image = File(img.path);
+
+      Uint8List _bytes = await image.readAsBytes();
+
+      String _base64String = base64.encode(_bytes);
+
+      http.MultipartFile multipartFile =
+          await http.MultipartFile.fromPath('photos', _base64String);
+      request.files.add(multipartFile);
+    }
+    http.StreamedResponse response = await request.send();
+
+    print(response.statusCode);
+  }
+
   @override
   void dispose() {
     city.dispose();
@@ -136,22 +198,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
           keyboardType: TextInputType.multiline,
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-          decoration: InputDecoration(
-              isDense: true,
-              alignLabelWithHint: true,
-              filled: true,
-              fillColor: Colors.white,
-              focusedBorder: outlineMainInputFocusedBorder,
-              enabledBorder: outlineMainInputFocusedBorder,
-              contentPadding:
-                  // ignore: prefer_const_constructors
-                  EdgeInsets.only(top: 24, bottom: 5, left: 15, right: 15),
-              hintStyle: const TextStyle(
-                  color: Color.fromARGB(255, 112, 112, 112),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600),
-              border: InputBorder.none,
-              hintText: 'Add short information about yourself '),
+          decoration: decorationForTextFormField('Contact Person'),
           onChanged: (val) {
             contactPerson.text = val;
           },
@@ -166,24 +213,9 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
           keyboardType: TextInputType.multiline,
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-          decoration: InputDecoration(
-              isDense: true,
-              alignLabelWithHint: true,
-              filled: true,
-              fillColor: Colors.white,
-              focusedBorder: outlineMainInputFocusedBorder,
-              enabledBorder: outlineMainInputFocusedBorder,
-              contentPadding:
-                  // ignore: prefer_const_constructors
-                  EdgeInsets.only(top: 24, bottom: 5, left: 15, right: 15),
-              hintStyle: const TextStyle(
-                  color: Color.fromARGB(255, 112, 112, 112),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600),
-              border: InputBorder.none,
-              hintText: 'Add short information about yourself '),
+          decoration: decorationForTextFormField('Address'),
           onChanged: (val) {
-            city.text = val;
+            address.text = val;
           },
         ),
         const SizedBox(
@@ -195,30 +227,146 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
           autofocus: false,
           keyboardType: TextInputType.multiline,
           style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+          decoration: decorationForTextFormField('City'),
+          onChanged: (val) {
+            city.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
-          decoration: InputDecoration(
-              isDense: true,
-              alignLabelWithHint: true,
-              filled: true,
-              fillColor: Colors.white,
-              focusedBorder: outlineMainInputFocusedBorder,
-              enabledBorder: outlineMainInputFocusedBorder,
-              contentPadding:
-                  // ignore: prefer_const_constructors
-                  EdgeInsets.only(top: 24, bottom: 5, left: 15, right: 15),
-              hintStyle: const TextStyle(
-                  color: Color.fromARGB(255, 112, 112, 112),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600),
-              border: InputBorder.none,
-              hintText: 'Add short'),
+          decoration: decorationForTextFormField('Region'),
           onChanged: (val) {
             region.text = val;
           },
         ),
         const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.number,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Postal Code'),
+          onChanged: (val) {
+            postalCode.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.number,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Price',
+              icon: const FaIcon(
+                FontAwesomeIcons.dollarSign,
+                color: Colors.grey,
+              )),
+          onChanged: (val) {
+            price.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Type'),
+          onChanged: (val) {
+            type.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          maxLines: 5,
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Description'),
+          onChanged: (val) {
+            description.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Floor'),
+          onChanged: (val) {
+            floor.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Phone'),
+          onChanged: (val) {
+            phone.text = val;
+          },
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        TextFormField(
+          maxLines: 3,
+          autovalidateMode: AutovalidateMode.always,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: false,
+          keyboardType: TextInputType.multiline,
+          style: const TextStyle(
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
+          decoration: decorationForTextFormField('Comments'),
+          onChanged: (val) {
+            comments.text = val;
+          },
+        ),
+        const SizedBox(
           height: 55,
         ),
+        const ChooseImageForAppartment(null),
+        const SizedBox(
+          height: 55,
+        ),
+        // ignore: sized_box_for_whitespace
         Container(
           width: 250,
           height: 40,
@@ -241,9 +389,3 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     );
   }
 }
-
-final outlineMainInputFocusedBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(8.0),
-  borderSide:
-      const BorderSide(color: Color.fromARGB(255, 171, 107, 255), width: 1.5),
-);

@@ -2,37 +2,40 @@
 import 'dart:convert';
 
 class ApartmentModel {
-  final String id;
-  final String contactPerson;
-  final String city;
-  final String region;
-  final String postalCode;
-  final String price;
-  final String type;
-  final String description;
-  final String comment;
-  final String phone;
-  final String floor;
-  final List photos;
+  final String? id;
+  final String? contactPerson;
+  final String? address;
+  final String? city;
+  final String? region;
+  final String? postalCode;
+  final String? price;
+  final String? type;
+  final String? description;
+  final String? comment;
+  final String? phone;
+  final String? floor;
+  final List? photos;
   ApartmentModel({
-    required this.id,
-    required this.contactPerson,
-    required this.city,
-    required this.region,
-    required this.postalCode,
-    required this.price,
-    required this.type,
-    required this.description,
-    required this.comment,
-    required this.phone,
-    required this.floor,
-    required this.photos,
+    this.id,
+    this.contactPerson,
+    this.address,
+    this.city,
+    this.region,
+    this.postalCode,
+    this.price,
+    this.type,
+    this.description,
+    this.comment,
+    this.phone,
+    this.floor,
+    this.photos,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'contactPerson': contactPerson,
+      'address': address,
       'city': city,
       'region': region,
       'postalCode': postalCode,
@@ -50,6 +53,7 @@ class ApartmentModel {
     return ApartmentModel(
       id: map['id'] as String,
       contactPerson: map['contactPerson'] as String,
+      address: map['address'] as String,
       city: map['city'] as String,
       region: map['region'] as String,
       postalCode: map['postalCode'] as String,

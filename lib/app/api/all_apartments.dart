@@ -14,7 +14,7 @@ Future<ApartmentModelList> fetchDataFromAzure() async {
       final data = jsonDecode(response.body);
 
       appartmentList = ApartmentModelList.fromJson(data);
-      print("photos " + appartmentList.apartmentModel[0].city);
+      print("photos " + appartmentList.apartmentModel[0].city.toString());
     }
   } catch (exception) {
     print(exception);

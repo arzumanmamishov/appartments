@@ -1,6 +1,5 @@
 import 'package:apartments/app/constans/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SimpleSelectionButton extends StatefulWidget {
   const SimpleSelectionButton({
@@ -100,9 +99,7 @@ class _Button extends StatelessWidget {
   Widget _buildIcon() {
     return CircleAvatar(
       radius: 5,
-      backgroundColor: (!selected)
-          ? kFontColorPallets[2]
-          : Theme.of(Get.context!).primaryColor,
+      backgroundColor: (!selected) ? kFontColorPallets[2] : Colors.blue,
     );
   }
 
@@ -110,9 +107,7 @@ class _Button extends StatelessWidget {
     return Text(
       data,
       style: TextStyle(
-        color: (!selected)
-            ? kFontColorPallets[1]
-            : Theme.of(Get.context!).primaryColor,
+        color: (!selected) ? kFontColorPallets[1] : Colors.blue,
         fontWeight: FontWeight.bold,
         letterSpacing: .8,
         fontSize: 14,
