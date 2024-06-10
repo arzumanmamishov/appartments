@@ -123,7 +123,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
       String uuid = const Uuid().v4();
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
 
-      await postImageUpload();
+      await addImagesToDb(context, accessToken);
       // final response = await http.post(
       //   Uri.parse(apiUrl),
       //   headers: <String, String>{
@@ -247,7 +247,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
 
       // var _request = http.MultipartRequest('PATCH', Uri.parse('\$baseUrl/post/upload-image/$postId/'));
       var _request = http.MultipartRequest(
-          'PATCH', Uri.parse('https://realtor.azurewebsites.net/api/Files'));
+          'POST', Uri.parse('https://realtor.azurewebsites.net/api/Files'));
       _request.headers.addAll({
         'Accept': '*/*',
         "Content-Type": "multipart/form-data",
@@ -259,24 +259,19 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
       for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
         images = profileDetailsListener.getXfileList[x];
       }
-      File x = File(images.path);
-      print("images: $x");
       _request.files.add(http.MultipartFile.fromBytes(
-          'images',
+          images.name,
           await images.readAsBytes().then((value) {
             return value.cast();
           }),
           filename: images.path.toString() + images.name));
 
-      print('getting');
       try {
+        print(_request.files.first.filename);
         var response = await _request.send();
-
-        var responseDataa = await http.Response.fromStream(response);
         if (response.statusCode == 200) {
         } else {
           print("Failed to upload images. Status code: ${response.statusCode}");
-          print("Response: ${responseDataa.body}");
         }
       } catch (e) {
         print("Error uploading images: $e");

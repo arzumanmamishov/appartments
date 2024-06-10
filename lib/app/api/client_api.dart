@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:universal_html/html.dart' as html;
 
 import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:dio/dio.dart';
@@ -106,9 +110,21 @@ Future<void> uploadPhotos(String _jwtToken, BuildContext context) async {
       'contactPerson': "ddefefefefe",
     });
 
-    for (String file in images) {
-      formData.files
-          .addAll([MapEntry("images[]", MultipartFile.fromString(file))]);
+    for (int i = 0; i < profileDetailsListener.getXfileList.length; i++) {
+      String fileName = 'photo_$i.jpg';
+      html.File htmlFile = html.File(
+          await profileDetailsListener.getXfileList[i].readAsBytes(), fileName);
+
+      final reader = html.FileReader();
+      reader.readAsArrayBuffer(htmlFile);
+
+      await reader.onLoadEnd.first;
+      final Uint8List bytes = reader.result as Uint8List;
+
+      formData.files.add(MapEntry(
+        'photos',
+        MultipartFile.fromBytes(bytes, filename: fileName),
+      ));
     }
 
     Response response = await dio.post(
@@ -116,20 +132,68 @@ Future<void> uploadPhotos(String _jwtToken, BuildContext context) async {
       data: formData,
       options: Options(
         headers: {
-          'Accept': 'application/json',
+          'Authorization': 'Bearer $_jwtToken',
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+    // Handle the response
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      List<String> photoReferences = List<String>.from(response.data);
+      print('Photo references: $photoReferences');
+    } else if (response.statusCode == 204) {
+      print('Images uploaded successfully, but no content was returned.');
+    } else {
+      print('Failed to upload images. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error uploading images: $e');
+  }
+}
+
+Future addImagesToDb(BuildContext context, String _jwtToken) async {
+  AppartDetailsListener profileDetailsListener =
+      Provider.of<AppartDetailsListener>(context, listen: false);
+  const url = 'https://realtor.azurewebsites.net/api/Files';
+
+  late XFile images;
+  for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
+    images = profileDetailsListener.getXfileList[x];
+  }
+
+  File imageFile = File(images.path);
+  try {
+    var formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(imageFile.path,
+          filename: imageFile.path),
+    });
+    final response = await Dio().post(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
           'Authorization': 'Bearer $_jwtToken',
           'Content-Type': 'multipart/form-data',
         },
       ),
     );
     if (response.statusCode == 200) {
-      List<String> photoReferences = List<String>.from(response.data);
-
-      print('Photo references: $photoReferences');
+      var map = response.data as Map;
+      print('success');
+      if (map['status'] == 'Successfully registered') {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      print('Failed to upload images. Status code: ${response.statusCode}');
+      //BotToast is a package for toasts available on pub.dev
+      BotToast.showText(text: 'Error');
+      return false;
     }
-  } catch (e) {
-    print('Error uploading images: $e');
+  } on DioError catch (error) {
+    print(error.message);
+  } catch (_) {
+    print(_.toString());
+    throw 'Something Went Wrong';
   }
 }
