@@ -14,7 +14,11 @@ class ApartmentModel {
   final String? comment;
   final String? phone;
   final String? floor;
+  final String? status;
+  final String? createdData;
+  final String? updatedUser;
   final List? photos;
+
   ApartmentModel({
     this.id,
     this.contactPerson,
@@ -28,6 +32,9 @@ class ApartmentModel {
     this.comment,
     this.phone,
     this.floor,
+    this.createdData,
+    this.status,
+    this.updatedUser,
     this.photos,
   });
 

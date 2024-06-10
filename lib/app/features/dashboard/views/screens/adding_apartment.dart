@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'dart:typed_data';
+import 'package:apartments/app/api/client_api.dart';
 import 'package:apartments/app/features/dashboard/views/components/text_form_fiel_decoration.dart';
 import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/responsive_builder.dart';
@@ -119,7 +121,9 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     try {
       print('started');
       String uuid = const Uuid().v4();
-      await uploadImages();
+      final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+
+      await postImageUpload();
       // final response = await http.post(
       //   Uri.parse(apiUrl),
       //   headers: <String, String>{
@@ -138,6 +142,9 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
       //     "comment": comments.text,
       //     "phone": phone.text,
       //     "floor": floor.text,
+      //     "status": "string",
+      //     "createdData": "string",
+      //     "updatedUser": "string",
       //     "photos": ['dddd'],
       //   }),
       // );
@@ -232,55 +239,85 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     }
   }
 
-  Future<void> uploadImages() async {
+  Future postImageUpload() async {
+    AppartDetailsListener profileDetailsListener =
+        Provider.of<AppartDetailsListener>(context, listen: false);
     try {
-      var uri = Uri.parse('https://realtor.azurewebsites.net/api/Files');
-      var request = http.MultipartRequest('POST', uri);
-      AppartDetailsListener profileDetailsListener =
-          Provider.of<AppartDetailsListener>(context, listen: false);
-      if (profileDetailsListener.getXfileList.isEmpty) {
-        print("No images selected.");
-        return;
-      }
-
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
-      // Add images to form data
-      for (int i = 0; i < profileDetailsListener.getXfileList.length; i++) {
-        var byteStream = profileDetailsListener.getXfileList[i].openRead();
-        var length = await profileDetailsListener.getXfileList[i].length();
-        print(profileDetailsListener.getXfileList.length);
-        var multipartFile = http.MultipartFile(
-          'photos',
-          byteStream,
-          length,
-        );
 
-        request.headers.addAll({
-          "Content-Type": "multipart/form-data",
-          "Authorization": "Bearer $accessToken",
-        });
-        print(multipartFile.length);
+      // var _request = http.MultipartRequest('PATCH', Uri.parse('\$baseUrl/post/upload-image/$postId/'));
+      var _request = http.MultipartRequest(
+          'PATCH', Uri.parse('https://realtor.azurewebsites.net/api/Files'));
+      _request.headers.addAll({
+        'Accept': '*/*',
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer $accessToken",
+      });
+      print('ok');
 
-        request.files.add(multipartFile);
+      late XFile images;
+      for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
+        images = profileDetailsListener.getXfileList[x];
       }
+      File x = File(images.path);
+      print("images: $x");
+      _request.files.add(http.MultipartFile.fromBytes(
+          'images',
+          await images.readAsBytes().then((value) {
+            return value.cast();
+          }),
+          filename: images.path.toString() + images.name));
 
-      // Send the request
-      var response = await request.send();
+      print('getting');
+      try {
+        var response = await _request.send();
 
-      // Handle the response
-      if (response.statusCode == 200) {
-        var responseData = await response.stream.bytesToString();
-        List<dynamic> photoReferences = json.decode(responseData);
-
-        // Handle the references returned by the server
-        print('Photo references: $photoReferences');
-      } else {
-        // Handle error
-        print('Failed to upload images. Status code: ${response.statusCode}');
+        var responseDataa = await http.Response.fromStream(response);
+        if (response.statusCode == 200) {
+        } else {
+          print("Failed to upload images. Status code: ${response.statusCode}");
+          print("Response: ${responseDataa.body}");
+        }
+      } catch (e) {
+        print("Error uploading images: $e");
       }
     } catch (e) {
-      // Handle error
-      print('Error uploading images: $e');
+      return false;
+    }
+  }
+
+  Future<bool> gcloudUpload() async {
+    AppartDetailsListener profileDetailsListener =
+        Provider.of<AppartDetailsListener>(context, listen: false);
+    late XFile images;
+    for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
+      images = profileDetailsListener.getXfileList[x];
+    }
+
+    var _bytes = await images.readAsBytes();
+    try {
+      final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+
+      return await http
+          .put(Uri.parse('https://realtor.azurewebsites.net/api/Files'),
+              headers: {
+                'Accept': '*/*',
+                "Content-Type": "multipart/form-data",
+                "Authorization": "Bearer $accessToken",
+              },
+              body: _bytes)
+          .then((value) {
+        if (value.statusCode == 200) {
+          print(value.statusCode);
+          return true;
+        } else {
+          print(value.statusCode);
+
+          return false;
+        }
+      });
+    } catch (e) {
+      return false;
     }
   }
 
