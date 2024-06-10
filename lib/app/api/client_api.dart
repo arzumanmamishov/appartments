@@ -105,10 +105,10 @@ Future<void> uploadPhotos(String _jwtToken, BuildContext context) async {
     Dio dio = Dio();
     FormData formData = FormData();
 
-    formData = FormData.fromMap({
-      'id': 'uif',
-      'contactPerson': "ddefefefefe",
-    });
+    // formData = FormData.fromMap({
+    //   'id': 'uif',
+    //   'contactPerson': "ddefefefefe",
+    // });
 
     for (int i = 0; i < profileDetailsListener.getXfileList.length; i++) {
       String fileName = 'photo_$i.jpg';

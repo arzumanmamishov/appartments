@@ -123,7 +123,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
       String uuid = const Uuid().v4();
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
 
-      await addImagesToDb(context, accessToken);
+      await uploadPhotos(accessToken, context);
       // final response = await http.post(
       //   Uri.parse(apiUrl),
       //   headers: <String, String>{
@@ -276,41 +276,6 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
       } catch (e) {
         print("Error uploading images: $e");
       }
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> gcloudUpload() async {
-    AppartDetailsListener profileDetailsListener =
-        Provider.of<AppartDetailsListener>(context, listen: false);
-    late XFile images;
-    for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
-      images = profileDetailsListener.getXfileList[x];
-    }
-
-    var _bytes = await images.readAsBytes();
-    try {
-      final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
-
-      return await http
-          .put(Uri.parse('https://realtor.azurewebsites.net/api/Files'),
-              headers: {
-                'Accept': '*/*',
-                "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer $accessToken",
-              },
-              body: _bytes)
-          .then((value) {
-        if (value.statusCode == 200) {
-          print(value.statusCode);
-          return true;
-        } else {
-          print(value.statusCode);
-
-          return false;
-        }
-      });
     } catch (e) {
       return false;
     }
