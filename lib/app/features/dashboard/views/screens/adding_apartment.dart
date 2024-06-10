@@ -1,13 +1,16 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'dart:typed_data';
 import 'package:apartments/app/features/dashboard/views/components/text_form_fiel_decoration.dart';
 import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/responsive_builder.dart';
 import 'package:apartments/app/utils/services/apartment_image_service.dart';
+import 'package:apartments/app/utils/services/shared_preferences.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -116,67 +119,169 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     try {
       print('started');
       String uuid = const Uuid().v4();
+      await uploadImages();
+      // final response = await http.post(
+      //   Uri.parse(apiUrl),
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json; charset=UTF-8',
+      //   },
+      //   body: jsonEncode(<String, dynamic>{
+      //     'id': uuid,
+      //     'contactPerson': contactPerson.text,
+      //     'city': city.text,
+      //     'region': region.text,
+      //     "address": address.text,
+      //     "postalCode": postalCode.text,
+      //     "price": price.text,
+      //     "type": type.text,
+      //     "description": description.text,
+      //     "comment": comments.text,
+      //     "phone": phone.text,
+      //     "floor": floor.text,
+      //     "photos": ['dddd'],
+      //   }),
+      // );
 
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'id': uuid,
-          'contactPerson': contactPerson.text,
-          'city': city.text,
-          'region': region.text,
-          "address": address.text,
-          "postalCode": postalCode.text,
-          "price": price.text,
-          "type": type.text,
-          "description": description.text,
-          "comment": comments.text,
-          "phone": phone.text,
-          "floor": floor.text,
-          "photos": ['dddd'],
-        }),
-      );
+      // if (response.statusCode == 201) {
+      //   // Successful POST request, handle the response here
 
-      if (response.statusCode == 201) {
-        // Successful POST request, handle the response here
-
-        print(response.statusCode);
-        final responseData = jsonDecode(response.body);
-        setState(() {
-          result =
-              'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
-        });
-      } else {
-        // If the server returns an error response, throw an exception
-        throw Exception('Failed to post data');
-      }
+      //   print(response.statusCode);
+      //   final responseData = jsonDecode(response.body);
+      //   setState(() {
+      //     result =
+      //         'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
+      //   });
+      // } else {
+      //   // If the server returns an error response, throw an exception
+      //   throw Exception('Failed to post data');
+      // }
     } catch (e) {
       print(e);
     }
   }
 
-  uploadFile() async {
+  //   uploadFile() async {
+  //     AppartDetailsListener profileDetailsListener =
+  //         Provider.of<AppartDetailsListener>(context, listen: false);
+  //     var postUri = Uri.parse("https://realtor.azurewebsites.net/api/Files");
+
+  //     print('upload images started');
+
+  //     http.MultipartRequest request = http.MultipartRequest("POST", postUri);
+  //     for (var img in profileDetailsListener.getXfileList) {
+  //       File image = File(img.path);
+
+  //       var bytes = await image.readAsBytes();
+  //       var base64img = base64Encode(bytes);
+  //       print(bytes);
+
+  //     // http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+  //     //   'image',
+  //     //   base64img,
+  //     // );
+  //     // request.files.add(multipartFile);
+  //   }
+  //   // http.StreamedResponse response = await request.send();
+  //   // request.files
+  //   //     .add(await http.MultipartFile.fromPath('image', 'path/to/image.png'));
+  //   // print(response.statusCode);
+  // }
+
+  Future<void> addProduct(String id) async {
     AppartDetailsListener profileDetailsListener =
         Provider.of<AppartDetailsListener>(context, listen: false);
-    var postUri = Uri.parse("apiUrl");
+    if (profileDetailsListener.getXfileList.isEmpty) {
+      print("No images selected.");
+      return;
+    }
+    final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+    print(id);
+    var uri = Uri.parse("https://realtor.azurewebsites.net/api/Files");
+    var request = http.MultipartRequest('POST', uri);
 
-    http.MultipartRequest request = http.MultipartRequest("POST", postUri);
-    for (var img in profileDetailsListener.getXfileList) {
-      File image = File(img.path);
+    // request.fields['id'] = id;
 
-      Uint8List _bytes = await image.readAsBytes();
-
-      String _base64String = base64.encode(_bytes);
-
-      http.MultipartFile multipartFile =
-          await http.MultipartFile.fromPath('photos', _base64String);
+    for (var image in profileDetailsListener.getXfileList) {
+      print(image);
+      // var stream = http.ByteStream(image.openRead());
+      var stream = http.ByteStream(Stream.castFrom(image.openRead()));
+      var length = await image.length();
+      var multipartFile =
+          http.MultipartFile(id, stream, length, filename: image.name);
       request.files.add(multipartFile);
     }
-    http.StreamedResponse response = await request.send();
+    request.headers.addAll({
+      "Content-Type": "multipart/form-data",
+      "Authorization": "Bearer $accessToken",
+    });
 
-    print(response.statusCode);
+    try {
+      var response = await request.send();
+
+      var responseDataa = await http.Response.fromStream(response);
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        List<dynamic> photoReferences = json.decode(responseData);
+        print(photoReferences);
+      } else {
+        print("Failed to upload images. Status code: ${response.statusCode}");
+        print("Response: ${responseDataa.body}");
+      }
+    } catch (e) {
+      print("Error uploading images: $e");
+    }
+  }
+
+  Future<void> uploadImages() async {
+    try {
+      var uri = Uri.parse('https://realtor.azurewebsites.net/api/Files');
+      var request = http.MultipartRequest('POST', uri);
+      AppartDetailsListener profileDetailsListener =
+          Provider.of<AppartDetailsListener>(context, listen: false);
+      if (profileDetailsListener.getXfileList.isEmpty) {
+        print("No images selected.");
+        return;
+      }
+
+      final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+      // Add images to form data
+      for (int i = 0; i < profileDetailsListener.getXfileList.length; i++) {
+        var byteStream = profileDetailsListener.getXfileList[i].openRead();
+        var length = await profileDetailsListener.getXfileList[i].length();
+        print(profileDetailsListener.getXfileList.length);
+        var multipartFile = http.MultipartFile(
+          'photos',
+          byteStream,
+          length,
+        );
+
+        request.headers.addAll({
+          "Content-Type": "multipart/form-data",
+          "Authorization": "Bearer $accessToken",
+        });
+        print(multipartFile.length);
+
+        request.files.add(multipartFile);
+      }
+
+      // Send the request
+      var response = await request.send();
+
+      // Handle the response
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        List<dynamic> photoReferences = json.decode(responseData);
+
+        // Handle the references returned by the server
+        print('Photo references: $photoReferences');
+      } else {
+        // Handle error
+        print('Failed to upload images. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle error
+      print('Error uploading images: $e');
+    }
   }
 
   @override

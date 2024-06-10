@@ -1,10 +1,8 @@
 import 'package:apartments/app/api/client_api.dart';
-import 'package:apartments/app/features/dashboard/views/screens/dashboard_screen.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
 import 'package:apartments/app/utils/services/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jsonwebtoken_decode/jsonwebtoken_decode.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class LoginScreen extends StatefulWidget {
