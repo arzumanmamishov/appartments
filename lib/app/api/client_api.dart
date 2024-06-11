@@ -94,117 +94,11 @@ class ApiClient {
   }
 }
 
-Future<void> uploadPhotos(String _jwtToken, BuildContext context) async {
+// Working code
+Future<List<dynamic>> sendImages(BuildContext context, String _jwtToken) async {
   AppartDetailsListener profileDetailsListener =
       Provider.of<AppartDetailsListener>(context, listen: false);
-
-  List<String> images = [];
-  for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
-    File imageFile = File(profileDetailsListener.getXfileList[x].path);
-    images.add(imageFile.path);
-  }
-
-  try {
-    Dio dio = Dio();
-    FormData formData = FormData();
-
-    // formData = FormData.fromMap({
-    //   'id': 'uif',
-    //   'contactPerson': "ddefefefefe",
-    // });
-
-    for (int i = 0; i < profileDetailsListener.getXfileList.length; i++) {
-      String fileName = 'photo_$i.jpg';
-      html.File htmlFile = html.File(
-          await profileDetailsListener.getXfileList[i].readAsBytes(), fileName);
-
-      final reader = html.FileReader();
-      reader.readAsArrayBuffer(htmlFile);
-
-      await reader.onLoadEnd.first;
-      final Uint8List bytes = reader.result as Uint8List;
-
-      formData.files.add(MapEntry(
-        'photos',
-        MultipartFile.fromBytes(bytes, filename: fileName),
-      ));
-    }
-
-    Response response = await dio.post(
-      'https://realtor.azurewebsites.net/api/Files',
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $_jwtToken',
-          'Content-Type': 'multipart/form-data',
-        },
-      ),
-    );
-    // Handle the response
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      List<String> photoReferences = List<String>.from(response.data);
-      print('Photo references: $photoReferences');
-    } else if (response.statusCode == 204) {
-      print('Images uploaded successfully, but no content was returned.');
-    } else {
-      print('Failed to upload images. Status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error uploading images: $e');
-  }
-}
-
-Future addImagesToDb(BuildContext context, String _jwtToken) async {
-  AppartDetailsListener profileDetailsListener =
-      Provider.of<AppartDetailsListener>(context, listen: false);
-  const url = 'https://realtor.azurewebsites.net/api/Files';
-
-  late XFile images;
-  for (var x = 0; x < profileDetailsListener.getXfileList.length; x++) {
-    images = profileDetailsListener.getXfileList[x];
-  }
-
-  File imageFile = File(images.path);
-  try {
-    var formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(imageFile.path,
-          filename: imageFile.path),
-    });
-    final response = await Dio().post(
-      url,
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $_jwtToken',
-          'Content-Type': 'multipart/form-data',
-        },
-      ),
-    );
-    if (response.statusCode == 200) {
-      var map = response.data as Map;
-      print('success');
-      if (map['status'] == 'Successfully registered') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      //BotToast is a package for toasts available on pub.dev
-      BotToast.showText(text: 'Error');
-      return false;
-    }
-  } on DioError catch (error) {
-    print(error.message);
-  } catch (_) {
-    print(_.toString());
-    throw 'Something Went Wrong';
-  }
-}
-
-//Working code
-Future<void> sendImages(BuildContext context, String _jwtToken) async {
-  AppartDetailsListener profileDetailsListener =
-      Provider.of<AppartDetailsListener>(context, listen: false);
+  late List<dynamic> photoReferences;
   Dio dio = Dio();
   String url =
       'https://realtor.azurewebsites.net/api/Files'; // Replace with your API endpoint
@@ -228,7 +122,7 @@ Future<void> sendImages(BuildContext context, String _jwtToken) async {
     final response = await request.send();
     if (response.statusCode == 200) {
       var responseData = await response.stream.bytesToString();
-      List<dynamic> photoReferences = json.decode(responseData);
+      photoReferences = json.decode(responseData);
       print(photoReferences);
       print('Upload successful: ${response.statusCode}');
     } else {
@@ -237,4 +131,5 @@ Future<void> sendImages(BuildContext context, String _jwtToken) async {
   } catch (e) {
     print('Upload error: $e');
   }
+  return photoReferences;
 }

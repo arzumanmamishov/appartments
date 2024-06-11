@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'dart:typed_data';
 import 'package:apartments/app/api/client_api.dart';
 import 'package:apartments/app/features/dashboard/views/components/text_form_fiel_decoration.dart';
-import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/responsive_builder.dart';
 import 'package:apartments/app/utils/services/apartment_image_service.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
@@ -12,8 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart';
 import 'package:uuid/uuid.dart';
 
 class AddingNewApartment extends StatefulWidget {
@@ -115,53 +111,41 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
   final TextEditingController phone = TextEditingController();
   final TextEditingController comments = TextEditingController();
 
-  String result = ''; //
-  List<String> imagesDownloadedList = [];
   Future<void> postData() async {
     try {
-      print('started');
       String uuid = const Uuid().v4();
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+      final listOfImages = await sendImages(context, accessToken);
+      final response = await http.post(Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            // 'Content-Type': 'multipart/form-data',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken'
+          },
+          body: jsonEncode(
+            <String, dynamic>{
+              "id": uuid,
+              "contactPerson": contactPerson.text,
+              "address": address.text,
+              "city": city.text,
+              "region": region.text,
+              "postalCode": postalCode.text,
+              "price": price.text,
+              "type": type.text,
+              "description": description.text,
+              "comment": comments.text,
+              "phone": phone.text,
+              "floor": floor.text,
+              "status": "string",
+              "createdData": "string",
+              "updatedUser": "string",
+              "photos": listOfImages,
+            },
+          ));
 
-      await sendImages(context, accessToken);
-      // final response = await http.post(
-      //   Uri.parse(apiUrl),
-      //   headers: <String, String>{
-      //     'Content-Type': 'application/json; charset=UTF-8',
-      //   },
-      //   body: jsonEncode(<String, dynamic>{
-      //     'id': uuid,
-      //     'contactPerson': contactPerson.text,
-      //     'city': city.text,
-      //     'region': region.text,
-      //     "address": address.text,
-      //     "postalCode": postalCode.text,
-      //     "price": price.text,
-      //     "type": type.text,
-      //     "description": description.text,
-      //     "comment": comments.text,
-      //     "phone": phone.text,
-      //     "floor": floor.text,
-      //     "status": "string",
-      //     "createdData": "string",
-      //     "updatedUser": "string",
-      //     "photos": ['dddd'],
-      //   }),
-      // );
-
-      // if (response.statusCode == 201) {
-      //   // Successful POST request, handle the response here
-
-      //   print(response.statusCode);
-      //   final responseData = jsonDecode(response.body);
-      //   setState(() {
-      //     result =
-      //         'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
-      //   });
-      // } else {
-      //   // If the server returns an error response, throw an exception
-      //   throw Exception('Failed to post data');
-      // }
+      if (response.statusCode == 200 || response.statusCode == 201) {
+      } else {}
     } catch (e) {
       print(e);
     }
@@ -172,6 +156,14 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     city.dispose();
     region.dispose();
     contactPerson.dispose();
+    postalCode.dispose();
+    address.dispose();
+    price.dispose();
+    type.dispose();
+    description.dispose();
+    comments.dispose();
+    phone.dispose();
+    floor.dispose();
     super.dispose();
   }
 
