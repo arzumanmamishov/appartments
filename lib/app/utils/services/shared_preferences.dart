@@ -12,4 +12,9 @@ class SPHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(sharedPreferenceUserIdKey);
   }
+
+  static Future<bool> removeTokenSharedPreference() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.remove(sharedPreferenceUserIdKey);
+  }
 }

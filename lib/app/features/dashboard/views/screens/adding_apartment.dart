@@ -1,17 +1,13 @@
 import 'dart:convert';
-
 import 'package:apartments/app/api/client_api.dart';
 import 'package:apartments/app/features/dashboard/views/components/text_form_fiel_decoration.dart';
 import 'package:apartments/app/shared_components/responsive_builder.dart';
 import 'package:apartments/app/utils/services/apartment_image_service.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:universal_html/html.dart';
 import 'package:uuid/uuid.dart';
 
 class AddingNewApartment extends StatefulWidget {
@@ -155,6 +151,12 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
     } catch (e) {
       return false;
     }
+  }
+
+  @override
+  void initState() {
+    print(now);
+    super.initState();
   }
 
   @override

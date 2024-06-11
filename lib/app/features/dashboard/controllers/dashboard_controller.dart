@@ -116,9 +116,15 @@ class DashboardController extends GetxController {
 
   void onPressedProfil() {}
 
-  void onSelectedMainMenu(int index, SelectionButtonData value) {
+  Future<void> onSelectedMainMenu(int index, SelectionButtonData value) async {
     if (index == 1) {
       NavigationService().navigateToScreen(AddingNewApartment());
+    }
+    if (index == 3) {
+      final response = await ApiClient().logout();
+      if (response == true) {
+        NavigationService().navigateToScreen(LoginScreen());
+      }
     }
   }
 

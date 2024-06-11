@@ -32,7 +32,7 @@ class _MainMenu extends StatelessWidget {
         SelectionButtonData(
           activeIcon: EvaIcons.settings,
           icon: EvaIcons.settingsOutline,
-          label: "Settings",
+          label: "Log out",
         ),
       ],
       onSelected: onSelected,

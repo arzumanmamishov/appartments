@@ -153,7 +153,7 @@ class CardTask extends StatelessWidget {
     return _IconLabel(
       color: onPrimary,
       iconData: EvaIcons.calendarOutline,
-      label: '12.12.2024',
+      label: data.createdData.toString(),
     );
   }
 
