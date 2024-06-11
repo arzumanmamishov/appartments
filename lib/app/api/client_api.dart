@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:http/http.dart' as http;
 
 import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:dio/dio.dart';
@@ -195,5 +198,43 @@ Future addImagesToDb(BuildContext context, String _jwtToken) async {
   } catch (_) {
     print(_.toString());
     throw 'Something Went Wrong';
+  }
+}
+
+//Working code
+Future<void> sendImages(BuildContext context, String _jwtToken) async {
+  AppartDetailsListener profileDetailsListener =
+      Provider.of<AppartDetailsListener>(context, listen: false);
+  Dio dio = Dio();
+  String url =
+      'https://realtor.azurewebsites.net/api/Files'; // Replace with your API endpoint
+
+  try {
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers['Authorization'] = 'Bearer $_jwtToken';
+
+    for (XFile file in profileDetailsListener.getXfileList) {
+      Uint8List fileBytes = await file.readAsBytes();
+      final multipartFile = http.MultipartFile.fromBytes(
+        'files',
+        fileBytes,
+        filename: basename(file.path),
+      );
+      print("file name is: ${multipartFile.filename}");
+
+      request.files.add(multipartFile);
+    }
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      var responseData = await response.stream.bytesToString();
+      List<dynamic> photoReferences = json.decode(responseData);
+      print(photoReferences);
+      print('Upload successful: ${response.statusCode}');
+    } else {
+      print('Upload failed with status: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Upload error: $e');
   }
 }
