@@ -28,8 +28,3 @@ class AppPages {
     ),
   ];
 }
-
-Future<String> getToken() async {
-  final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
-  return accessToken;
-}

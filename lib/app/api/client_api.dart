@@ -42,6 +42,11 @@ class ApiClient {
     }
   }
 
+  Future<String> getToken() async {
+    final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+    return accessToken;
+  }
+
   Future<dynamic> getUserProfileData(String accessToken) async {
     try {
       Response response = await _dio.get(

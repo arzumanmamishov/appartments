@@ -1,8 +1,10 @@
 import 'dart:ui';
+import 'package:apartments/app/features/dashboard/views/screens/dashboard_screen.dart';
 import 'package:apartments/app/utils/helpers/navigation_services.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:provider/provider.dart';
 
+import 'app/api/client_api.dart';
 import 'app/config/routes/app_pages.dart';
 import 'app/config/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +21,25 @@ void main() {
   ], child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String tokenExist = '';
+  ApiClient apiClient = ApiClient();
+  @override
+  void initState() {
+    getToken();
+    super.initState();
+  }
+
+  getToken() async {
+    tokenExist = await apiClient.getToken();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +47,11 @@ class MyApp extends StatelessWidget {
       navigatorKey: NavigationService().navigationKey,
       title: 'Apartment',
       theme: AppTheme.basic,
-      initialRoute: AppPages.initial,
+      // initialRoute: AppPages.initial,
       getPages: AppPages.routes,
-      // home: const LoginScreen(),
+      home: tokenExist.isNotEmpty == true
+          ? const DashboardScreen()
+          : const LoginScreen(),
       scrollBehavior: CustomScrollBehaviour(),
       builder: BotToastInit(),
       navigatorObservers: [BotToastNavigatorObserver()],
