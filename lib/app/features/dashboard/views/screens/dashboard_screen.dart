@@ -105,6 +105,7 @@ class DashboardScreen extends GetView<DashboardController> {
                   flex: constraints.maxWidth > 1350 ? 10 : 9,
                   child: SingleChildScrollView(
                     controller: ScrollController(),
+                    physics: const BouncingScrollPhysics(),
                     child: _buildTaskContent(),
                   ),
                 ),

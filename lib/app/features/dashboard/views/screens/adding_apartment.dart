@@ -365,7 +365,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
                 final done = await postData();
                 if (done == true) {
                   cancel();
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 }
               },
               child: const Text(

@@ -20,11 +20,6 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
   final PagingController<int, dynamic> _pagingController =
       PagingController(firstPageKey: 1);
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   // Future<void> _fetchPage(int pageKey) async {
   //   try {
   //     // get api /beers list from pages
