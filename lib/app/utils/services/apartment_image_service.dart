@@ -50,7 +50,8 @@ class _ChooseImageForPortfolioState extends State<ChooseImageForAppartment> {
     AppartDetailsListener profileDetailsListener =
         Provider.of<AppartDetailsListener>(context, listen: false);
     print('select image ');
-    final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
+    final List<XFile>? selectedImages =
+        await imagePicker.pickMultiImage(imageQuality: 60);
 
     // Future.delayed(const Duration(seconds: 3));
 

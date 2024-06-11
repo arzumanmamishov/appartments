@@ -20,7 +20,7 @@ class _MainMenu extends StatelessWidget {
         SelectionButtonData(
           activeIcon: EvaIcons.bell,
           icon: EvaIcons.bellOutline,
-          label: "Apartments",
+          label: "Add Apartment",
           totalNotif: 100,
         ),
         SelectionButtonData(

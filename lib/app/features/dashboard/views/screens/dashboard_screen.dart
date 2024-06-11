@@ -1,6 +1,7 @@
 library dashboard;
 
 import 'package:apartments/app/constans/app_constants.dart';
+import 'package:apartments/app/features/dashboard/views/components/filters_forms.dart';
 import 'package:apartments/app/features/dashboard/views/screens/adding_apartment.dart';
 
 import 'package:apartments/app/shared_components/header_text.dart';
@@ -204,7 +205,7 @@ class DashboardScreen extends GetView<DashboardController> {
             ],
           ),
           const SizedBox(height: kSpacing),
-          const TaskInProgress(),
+          const AllApartmentsScreen(),
 
           // const SizedBox(height: kSpacing * 2),
           // const _HeaderWeeklyTask(),
@@ -236,6 +237,10 @@ class DashboardScreen extends GetView<DashboardController> {
               )
             ],
           ),
+          const SizedBox(
+            height: 25,
+          ),
+          const FilterOfAppartments(),
           // const SizedBox(height: kSpacing),
           // ...controller.taskGroup
           //     .map(

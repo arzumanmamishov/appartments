@@ -112,6 +112,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
   final TextEditingController floor = TextEditingController();
   final TextEditingController phone = TextEditingController();
   final TextEditingController comments = TextEditingController();
+  DateTime now = DateTime.now();
 
   Future<bool> postData() async {
     try {
@@ -140,8 +141,8 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
               "phone": phone.text,
               "floor": floor.text,
               "status": "string",
-              "createdData": "string",
-              "updatedUser": "string",
+              "createdData": now.toString(),
+              "updatedUser": now.toString(),
               "photos": listOfImages,
             },
           ));

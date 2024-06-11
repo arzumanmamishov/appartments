@@ -4,20 +4,50 @@ import 'package:apartments/app/models/get_all_appart.dart';
 import 'package:apartments/app/shared_components/card_task.dart';
 import 'package:apartments/app/utils/animations/show_up_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-class TaskInProgress extends StatefulWidget {
-  const TaskInProgress({Key? key}) : super(key: key);
+class AllApartmentsScreen extends StatefulWidget {
+  const AllApartmentsScreen({Key? key}) : super(key: key);
 
   @override
-  State<TaskInProgress> createState() => TaskInProgressState();
+  State<AllApartmentsScreen> createState() => AllApartmentsScreenState();
 }
 
-class TaskInProgressState extends State<TaskInProgress> {
+class AllApartmentsScreenState extends State<AllApartmentsScreen> {
+  final int _pageSize = 20;
+  RemoteApi remoteApi = RemoteApi();
+
+  final PagingController<int, dynamic> _pagingController =
+      PagingController(firstPageKey: 1);
+
   @override
   void initState() {
-    fetchDataFromAzure();
     super.initState();
   }
+
+  // Future<void> _fetchPage(int pageKey) async {
+  //   try {
+  //     // get api /beers list from pages
+  //     final newItems = await remoteApi.fetchDataFromAzure();
+  //     // Check if it is last page
+  //     final isLastPage = newItems!.length < _pageSize;
+  //     // If it is last page then append
+  //     // last page else append new page
+  //     if (isLastPage) {
+  //       _pagingController.appendLastPage(newItems);
+  //     } else {
+  //       // Appending new page when it is not last page
+  //       final nextPageKey = pageKey + 1;
+  //       _pagingController.appendPage(newItems, nextPageKey);
+  //     }
+  //   }
+  //   // Handle error in catch
+  //   catch (error) {
+  //     print(_pagingController.error);
+  //     // Sets the error in controller
+  //     _pagingController.error = error;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +55,7 @@ class TaskInProgressState extends State<TaskInProgress> {
       borderRadius: BorderRadius.circular(kBorderRadius * 2),
       child: SizedBox(
         child: FutureBuilder<ApartmentModelList>(
-            future: fetchDataFromAzure(),
+            future: remoteApi.fetchDataFromAzure(),
             builder: (BuildContext context,
                 AsyncSnapshot<ApartmentModelList> snapshot) {
               if (!snapshot.hasData) {
