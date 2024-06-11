@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:apartments/app/utils/helpers/navigation_services.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:provider/provider.dart';
 
 import 'app/config/routes/app_pages.dart';
@@ -30,6 +31,8 @@ class MyApp extends StatelessWidget {
       getPages: AppPages.routes,
       // home: const LoginScreen(),
       scrollBehavior: CustomScrollBehaviour(),
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
       debugShowCheckedModeBanner: false,
     );
   }

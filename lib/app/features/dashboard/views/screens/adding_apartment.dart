@@ -5,8 +5,10 @@ import 'package:apartments/app/features/dashboard/views/components/text_form_fie
 import 'package:apartments/app/shared_components/responsive_builder.dart';
 import 'package:apartments/app/utils/services/apartment_image_service.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart';
@@ -111,7 +113,7 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
   final TextEditingController phone = TextEditingController();
   final TextEditingController comments = TextEditingController();
 
-  Future<void> postData() async {
+  Future<bool> postData() async {
     try {
       String uuid = const Uuid().v4();
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
@@ -145,9 +147,12 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
           ));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-      } else {}
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
-      print(e);
+      return false;
     }
   }
 
@@ -354,8 +359,13 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 255, 188, 2),
               ),
-              onPressed: () {
-                postData();
+              onPressed: () async {
+                var cancel = BotToast.showLoading();
+                final done = await postData();
+                if (done == true) {
+                  cancel();
+                  Navigator.pop(context);
+                }
               },
               child: const Text(
                 'Submit',
@@ -368,4 +378,8 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
       ],
     );
   }
+}
+
+textShow() {
+  return Text('dddd');
 }

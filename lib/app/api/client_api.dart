@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:universal_html/html.dart' as html;
 import 'package:http/http.dart' as http;
 
 import 'package:apartments/app/providers/appartment_provider.dart';
