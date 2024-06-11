@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 part 'app_routes.dart';
 
 class AppPages {
-  final accessToken = SPHelper.getTokenSharedPreference();
   static const initial = Routes.dashboard;
 
   static final routes = [

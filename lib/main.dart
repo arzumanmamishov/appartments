@@ -8,6 +8,7 @@ import 'app/config/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'app/features/dashboard/views/screens/login_screen.dart';
 import 'app/providers/appartment_provider.dart';
 
 void main() {
