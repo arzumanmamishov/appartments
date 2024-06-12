@@ -8,7 +8,7 @@ class ApartmentModel {
   final String? city;
   final String? region;
   final String? postalCode;
-  final String? price;
+  final double? price;
   final String? type;
   final String? description;
   final String? comment;
@@ -64,7 +64,7 @@ class ApartmentModel {
       city: map['city'] as String,
       region: map['region'] as String,
       postalCode: map['postalCode'] as String,
-      price: map['price'] as String,
+      price: map['price'] as double,
       type: map['type'] as String,
       description: map['description'] as String,
       comment: map['comment'] as String,

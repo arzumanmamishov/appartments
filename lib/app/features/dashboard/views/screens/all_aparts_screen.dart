@@ -5,6 +5,7 @@ import 'package:apartments/app/models/get_all_appart.dart';
 import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/card_task.dart';
 import 'package:apartments/app/utils/animations/show_up_animation.dart';
+import 'package:apartments/app/utils/services/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -83,9 +84,10 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
                   child: ShowUp(
                     delay: 400,
                     child: InkWell(
-                      onTap: () {
-                        profileDetailsListener.setApartmentModel =
-                            snapshot.data!.apartmentModel[index];
+                      onTap: () async {
+                        await SPHelper.saveIDAptSharedPreference(
+                            snapshot.data!.apartmentModel[index].id.toString());
+
                         Get.toNamed("/apartmentdetail");
                       },
                       child: CardTask(
