@@ -1,5 +1,8 @@
 import 'dart:ui';
+import 'package:apartments/app/features/dashboard/controllers/authcontroller.dart';
 import 'package:apartments/app/features/dashboard/views/screens/dashboard_screen.dart';
+import 'package:apartments/app/features/dashboard/views/screens/home_page.dart';
+import 'package:apartments/app/features/dashboard/views/screens/second_page.dart';
 import 'package:apartments/app/utils/helpers/navigation_services.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +15,30 @@ import 'package:get/get.dart';
 
 import 'app/features/dashboard/views/screens/login_screen.dart';
 import 'app/providers/appartment_provider.dart';
+import 'app/utils/services/auth_services.dart';
 
-void main() {
+class AuthMiddleware extends GetMiddleware {
+  @override
+  RouteSettings? redirect(String? route) {
+    // Use await to wait for the asynchronous result
+    AuthService.isAuthenticated().then((isAuthenticated) {
+      if (!isAuthenticated) {
+        Get.offNamed('/login');
+      }
+    });
+    // Return null immediately since the redirection will be handled asynchronously
+    return null;
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Get.put(DashboardController()); // Initialize DashboardController
+  final authController = Get.put(AuthController());
+  await authController.checkAuthenticationStatus();
+
   runApp(MultiProvider(providers: [
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => AppartDetailsListener()),
-    ]),
+    ChangeNotifierProvider(create: (_) => AppartDetailsListener()),
   ], child: const MyApp()));
 }
 
@@ -30,28 +51,31 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String tokenExist = '';
-  ApiClient apiClient = ApiClient();
   @override
   void initState() {
-    getToken();
     super.initState();
   }
 
-  getToken() async {
-    tokenExist = await apiClient.getToken();
-  }
+  final AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
+    final authController = Get.find<AuthController>();
+
     return GetMaterialApp(
       navigatorKey: NavigationService().navigationKey,
       title: 'Apartment',
       theme: AppTheme.basic,
-      // initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
-      home: tokenExist.isNotEmpty == true
-          ? const DashboardScreen()
-          : const LoginScreen(),
+      initialRoute: authController.isAuthenticated.value ? '/' : '/login',
+      getPages: [
+        GetPage(name: '/', page: () => DashboardScreen()),
+        GetPage(name: '/login', page: () => LoginScreen()),
+        GetPage(
+          name: '/second',
+          page: () => SecondPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+      ],
       scrollBehavior: CustomScrollBehaviour(),
       builder: BotToastInit(),
       navigatorObservers: [BotToastNavigatorObserver()],

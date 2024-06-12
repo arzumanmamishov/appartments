@@ -1,10 +1,9 @@
 library dashboard;
 
-import 'package:apartments/app/api/client_api.dart';
 import 'package:apartments/app/constans/app_constants.dart';
+import 'package:apartments/app/features/dashboard/controllers/authcontroller.dart';
 import 'package:apartments/app/features/dashboard/views/components/filters_forms.dart';
 import 'package:apartments/app/features/dashboard/views/screens/adding_apartment.dart';
-import 'package:apartments/app/features/dashboard/views/screens/login_screen.dart';
 
 import 'package:apartments/app/shared_components/header_text.dart';
 import 'package:apartments/app/shared_components/list_task_assigned.dart';
@@ -66,8 +65,9 @@ class DashboardScreen extends GetView<DashboardController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildFilterContent(
-                    onPressedMenu: () => controller.openDrawer(),
+                  const BuilFilterContent(
+                    isActive: true,
+                    desktop: "mobile",
                   ),
                   _buildTaskContent(
                     onPressedMenu: () => controller.openDrawer(),
@@ -82,9 +82,7 @@ class DashboardScreen extends GetView<DashboardController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildFilterContent(
-                    onPressedMenu: () => controller.openDrawer(),
-                  ),
+                  const BuilFilterContent(isActive: true, desktop: "mobile"),
                   _buildTaskContent(
                     onPressedMenu: () => controller.openDrawer(),
                   ),
@@ -119,7 +117,8 @@ class DashboardScreen extends GetView<DashboardController> {
                   flex: 4,
                   child: SingleChildScrollView(
                     controller: ScrollController(),
-                    child: _buildFilterContent(),
+                    child: const BuilFilterContent(
+                        isActive: false, desktop: "desktop"),
                   ),
                 ),
               ],
@@ -209,22 +208,27 @@ class DashboardScreen extends GetView<DashboardController> {
           ),
           const SizedBox(height: kSpacing),
           const AllApartmentsScreen(),
-
-          // const SizedBox(height: kSpacing * 2),
-          // const _HeaderWeeklyTask(),
-          // const SizedBox(height: kSpacing),
-          // _WeeklyTask(
-          //   data: controller.weeklyTask,
-          //   onPressed: controller.onPressedTask,
-          //   onPressedAssign: controller.onPressedAssignTask,
-          //   onPressedMember: controller.onPressedMemberTask,
-          // )
         ],
       ),
     );
   }
+}
 
-  Widget _buildFilterContent({Function()? onPressedMenu}) {
+class BuilFilterContent extends StatefulWidget {
+  final bool? isActive;
+  final String desktop;
+
+  const BuilFilterContent(
+      {required this.isActive, required this.desktop, super.key});
+
+  @override
+  State<BuilFilterContent> createState() => _BuilFilterContentState();
+}
+
+class _BuilFilterContentState extends State<BuilFilterContent> {
+  bool openFilter = false;
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kSpacing),
       child: Column(
@@ -234,7 +238,12 @@ class DashboardScreen extends GetView<DashboardController> {
             children: [
               const Expanded(child: HeaderText("Filter")),
               IconButton(
-                onPressed: onPressedMenu,
+                onPressed: () {
+                  if (widget.isActive == true || widget.isActive == null) {
+                    openFilter = !openFilter;
+                    setState(() {});
+                  }
+                },
                 icon: const Icon(EvaIcons.funnelOutline),
                 tooltip: "Filter",
               )
@@ -243,17 +252,11 @@ class DashboardScreen extends GetView<DashboardController> {
           const SizedBox(
             height: 25,
           ),
-          const FilterOfAppartments(),
-          // const SizedBox(height: kSpacing),
-          // ...controller.taskGroup
-          //     .map(
-          //       (e) => _TaskGroup(
-          //         title: DateFormat('d MMMM').format(e[0].date),
-          //         data: e,
-          //         onPressed: controller.onPressedTaskGroup,
-          //       ),
-          //     )
-          //     .toList()
+          if (widget.desktop == 'mobile') ...[
+            openFilter == true ? const FilterOfAppartments() : const SizedBox(),
+          ] else ...[
+            const FilterOfAppartments()
+          ]
         ],
       ),
     );

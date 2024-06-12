@@ -1,4 +1,5 @@
 import 'package:apartments/app/api/client_api.dart';
+import 'package:apartments/app/features/dashboard/controllers/authcontroller.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
 import 'package:apartments/app/utils/services/validator.dart';
 import 'package:flutter/material.dart';
@@ -18,54 +19,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final ApiClient _apiClient = ApiClient();
   bool _showPassword = false;
-
-  Future<void> login() async {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Processing Data'),
-        backgroundColor: Colors.green.shade300,
-      ));
-
-      dynamic res = await _apiClient.login(
-        usernameController.text,
-        passwordController.text,
-      );
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      if (res['status'] != 401) {
-        String accessToken = res['token'];
-        String token = accessToken;
-
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-
-        bool isTokenExpired = JwtDecoder.isExpired(token);
-
-        if (isTokenExpired == true) {
-          Get.toNamed('/loginScreen');
-        }
-        await SPHelper.saveTokenSharedPreference(token);
-
-        // DateTime expirationDate = JwtDecoder.getExpirationDate(token);
-
-        // print(expirationDate);
-
-        // Duration tokenTime = JwtDecoder.getTokenTime(token);
-
-        // print(tokenTime.inDays);
-        Get.toNamed('/dashboard');
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) =>  const DashboardScreen()));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: ${res['Message']}'),
-          backgroundColor: Colors.red.shade300,
-        ));
-      }
-    }
-  }
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    final AuthController authController = Get.find();
+
     return Scaffold(
         backgroundColor: Colors.blueGrey[200],
         body: Center(
@@ -155,7 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   Expanded(
                                     child: ElevatedButton(
-                                      onPressed: login,
+                                      onPressed: () async {
+                                        await authController.login(
+                                            usernameController.text,
+                                            passwordController.text);
+                                      },
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.indigo,
                                           shape: RoundedRectangleBorder(

@@ -26,22 +26,6 @@ class ApiClient {
   //   }
   // }
 
-  Future<dynamic> login(String username, String password) async {
-    try {
-      Response response = await _dio.post(
-        'https://realtor.azurewebsites.net/api/Authenticate/login',
-        data: {
-          'username': username,
-          'password': password,
-        },
-        // queryParameters: {'apikey': ApiSecret.apiKey},
-      );
-      return response.data;
-    } on DioError catch (e) {
-      return e.response!.data;
-    }
-  }
-
   Future<String> getToken() async {
     final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
     return accessToken;
@@ -107,7 +91,6 @@ Future<List<dynamic>> sendImages(BuildContext context, String _jwtToken) async {
   AppartDetailsListener profileDetailsListener =
       Provider.of<AppartDetailsListener>(context, listen: false);
   late List<dynamic> photoReferences;
-  Dio dio = Dio();
   String url =
       'https://realtor.azurewebsites.net/api/Files'; // Replace with your API endpoint
 

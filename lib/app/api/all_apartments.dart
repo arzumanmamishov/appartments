@@ -11,7 +11,7 @@ class RemoteApi {
 
     try {
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
-
+      print("accessToken: $accessToken");
       Response response = await _dio.get(
         url,
         // queryParameters: {'apikey': ApiSecret.apiKey},
@@ -21,6 +21,7 @@ class RemoteApi {
       );
       final data = response.data;
       appartmentList = ApartmentModelList.fromJson(data);
+      print(appartmentList);
       return appartmentList;
     } on DioError catch (e) {
       return e.response!.data;
