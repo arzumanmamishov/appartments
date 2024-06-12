@@ -1,7 +1,6 @@
 import 'package:apartments/app/models/get_all_appart.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CardTask extends StatelessWidget {
   const CardTask({

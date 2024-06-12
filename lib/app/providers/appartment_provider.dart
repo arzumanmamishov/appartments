@@ -7,69 +7,24 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AppartDetailsListener with ChangeNotifier {
-  bool toogleBetweenAboutAndComments = true;
-  bool comments = false;
-  bool toogle = true;
-  bool updatePhoneNumber = false;
-  bool highRated = false;
-  File? selfyFile;
-  File? passportFile;
-  String? dateOfBirth;
-  String? taxId;
-  ApartmentModel? portfolioModel;
+  ApartmentModel? apartmentModel;
+
   bool? useDifferentFormat;
   List? allPortfolioImagesWithNotifier = [];
 
   List<XFile> xfileList = [];
   List<Uint8List?> unitfileList = [];
   List<ApartmentModel> portfolioModelList = [];
-  ApartmentModel? get getPortfolioModel => portfolioModel;
+  ApartmentModel? get getApartModel => apartmentModel;
   List<XFile> get getXfileList => xfileList;
   List<Uint8List?> get getunitfileList => unitfileList;
   UnmodifiableListView<ApartmentModel> get getPortfolioModelList =>
       UnmodifiableListView(portfolioModelList);
-
-  get getUseDifferentFormat => useDifferentFormat;
-  get getSelfyFile => selfyFile;
-  get getPassportFile => passportFile;
-  get getDateOfBirth => dateOfBirth;
-  get gettaxId => taxId;
-  get changePhoneNumber => updatePhoneNumber;
+  get getuseDifferentFormat => useDifferentFormat;
   get getAllPortfolioImagesWithNotifier => allPortfolioImagesWithNotifier;
-  get gettoogleBetweenAboutAndComments => toogleBetweenAboutAndComments;
-  get getRate => highRated;
-  set toogleBetweenAboutAndComment(bool toogleBetweenAboutAndComments) {
-    toogleBetweenAboutAndComments = toogleBetweenAboutAndComments;
-    notifyListeners();
-  }
 
-  set setPhoneNumber(bool newPhoneNumber) {
-    updatePhoneNumber = newPhoneNumber;
-    notifyListeners();
-  }
-
-  set setSelfyFile(File? image) {
-    selfyFile = image;
-    notifyListeners();
-  }
-
-  set setPassFile(File? image) {
-    passportFile = image;
-    notifyListeners();
-  }
-
-  set setTaxId(String? number) {
-    taxId = number;
-    notifyListeners();
-  }
-
-  set setDateOfBirth(String? number) {
-    dateOfBirth = number;
-    notifyListeners();
-  }
-
-  set setPortFolioModel(ApartmentModel portfolioModelData) {
-    portfolioModel = portfolioModelData;
+  set setApartmentModel(ApartmentModel apartmentModels) {
+    apartmentModel = apartmentModels;
     notifyListeners();
   }
 
@@ -95,11 +50,6 @@ class AppartDetailsListener with ChangeNotifier {
 
   set setAllPortfolioImagesWithNotifier(List? imagesList) {
     allPortfolioImagesWithNotifier = imagesList;
-    notifyListeners();
-  }
-
-  set setRating(bool rate) {
-    highRated = rate;
     notifyListeners();
   }
 }

@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
+  fan_carousel_image_slider:
+    dependency: "direct main"
+    description:
+      name: fan_carousel_image_slider
+      sha256: af6fa57110a68d054a94784896f213b088f8debe94eea64eaf97b39ad5c8c21b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   ffi:
     dependency: transitive
     description:
@@ -223,7 +231,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       sha256: "395d6b7831f21f3b989ebedbb785545932adb9afe2622c1ffacf7f4b53a7e544"
@@ -616,14 +624,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
-  responsive_sizer:
-    dependency: "direct main"
-    description:
-      name: responsive_sizer
-      sha256: "6aefee6065c0883681bc7559147a24d8fa1846d296a216abcda25ff349340712"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.1"
   rxdart:
     dependency: transitive
     description:

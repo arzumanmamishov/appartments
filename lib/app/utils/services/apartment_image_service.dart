@@ -89,7 +89,7 @@ class _ChooseImageForPortfolioState extends State<ChooseImageForAppartment> {
 
     return Column(
       children: [
-        if (profileDetailsListener.getUseDifferentFormat == true &&
+        if (profileDetailsListener.getuseDifferentFormat == true &&
             allPortfolioImagesWothNotifier!.isNotEmpty) ...[
           Container(
             child: ImagesListToSend(

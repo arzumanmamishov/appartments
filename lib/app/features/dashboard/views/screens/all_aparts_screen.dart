@@ -1,10 +1,14 @@
 import 'package:apartments/app/constans/app_constants.dart';
 import 'package:apartments/app/api/all_apartments.dart';
+import 'package:apartments/app/features/dashboard/views/screens/apartment_details.dart';
 import 'package:apartments/app/models/get_all_appart.dart';
+import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/card_task.dart';
 import 'package:apartments/app/utils/animations/show_up_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class AllApartmentsScreen extends StatefulWidget {
   const AllApartmentsScreen({Key? key}) : super(key: key);
@@ -46,6 +50,8 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppartDetailsListener profileDetailsListener =
+        Provider.of<AppartDetailsListener>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(kBorderRadius * 2),
       child: SizedBox(
@@ -76,10 +82,17 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
                   padding: const EdgeInsets.symmetric(vertical: kSpacing / 2),
                   child: ShowUp(
                     delay: 400,
-                    child: CardTask(
-                      data: snapshot.data!.apartmentModel[index],
-                      primary: const Color.fromARGB(255, 105, 188, 255),
-                      onPrimary: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        profileDetailsListener.setApartmentModel =
+                            snapshot.data!.apartmentModel[index];
+                        Get.toNamed("/apartmentdetail");
+                      },
+                      child: CardTask(
+                        data: snapshot.data!.apartmentModel[index],
+                        primary: const Color.fromARGB(255, 105, 188, 255),
+                        onPrimary: Colors.white,
+                      ),
                     ),
                   ),
                 ),
