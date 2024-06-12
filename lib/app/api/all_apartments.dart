@@ -5,27 +5,44 @@ import 'package:dio/dio.dart';
 class RemoteApi {
   final Dio _dio = Dio();
 
-  Future<ApartmentModelList> fetchDataFromAzure() async {
-    var url = 'https://realtor.azurewebsites.net/api/RentObjects';
-    late ApartmentModelList appartmentList;
-
+  Future<ApartmentModelList> fetchDataFromAzure(int page, int limit) async {
+    var url = 'https://realtor.azurewebsites.net/api/RentObjects/pagination';
+    late ApartmentModelList apartmentModelList;
+    print('started');
     try {
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
 
       Response response = await _dio.get(
         url,
+        queryParameters: {
+          'page': page,
+          'count': limit,
+        },
         options: Options(
           headers: {'Authorization': 'Bearer $accessToken'},
         ),
       );
       final data = response.data;
+      print(data);
+      apartmentModelList = ApartmentModelList.fromJson(data);
 
-      appartmentList = ApartmentModelList.fromJson(data);
-      return appartmentList;
+      int totalItems = response.data['total'];
+
+      return apartmentModelList;
     } on DioError catch (e) {
       return e.response!.data;
     }
   }
+}
+
+class PaginatedResponse {
+  final List<ApartmentModel> apartments;
+  final int totalItems;
+
+  PaginatedResponse({
+    required this.apartments,
+    required this.totalItems,
+  });
 }
 
 // workingremote api

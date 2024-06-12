@@ -19,35 +19,7 @@ class AllApartmentsScreen extends StatefulWidget {
 }
 
 class AllApartmentsScreenState extends State<AllApartmentsScreen> {
-  final int _pageSize = 20;
   RemoteApi remoteApi = RemoteApi();
-
-  final PagingController<int, dynamic> _pagingController =
-      PagingController(firstPageKey: 1);
-
-  // Future<void> _fetchPage(int pageKey) async {
-  //   try {
-  //     // get api /beers list from pages
-  //     final newItems = await remoteApi.fetchDataFromAzure();
-  //     // Check if it is last page
-  //     final isLastPage = newItems!.length < _pageSize;
-  //     // If it is last page then append
-  //     // last page else append new page
-  //     if (isLastPage) {
-  //       _pagingController.appendLastPage(newItems);
-  //     } else {
-  //       // Appending new page when it is not last page
-  //       final nextPageKey = pageKey + 1;
-  //       _pagingController.appendPage(newItems, nextPageKey);
-  //     }
-  //   }
-  //   // Handle error in catch
-  //   catch (error) {
-  //     print(_pagingController.error);
-  //     // Sets the error in controller
-  //     _pagingController.error = error;
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +29,7 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
       borderRadius: BorderRadius.circular(kBorderRadius * 2),
       child: SizedBox(
         child: FutureBuilder<ApartmentModelList>(
-            future: remoteApi.fetchDataFromAzure(),
+            future: remoteApi.fetchDataFromAzure(0, 2),
             builder: (BuildContext context,
                 AsyncSnapshot<ApartmentModelList> snapshot) {
               if (!snapshot.hasData) {
