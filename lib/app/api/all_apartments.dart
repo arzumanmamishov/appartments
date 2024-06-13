@@ -26,8 +26,6 @@ class RemoteApi {
       print(data);
       apartmentModelList = ApartmentModelList.fromJson(data);
 
-      int totalItems = response.data['total'];
-
       return apartmentModelList;
     } on DioError catch (e) {
       return e.response!.data;

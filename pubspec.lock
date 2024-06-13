@@ -238,6 +238,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.2"
+  flutter_custom_text_input_formatter:
+    dependency: transitive
+    description:
+      name: flutter_custom_text_input_formatter
+      sha256: "36cb7d56736449da5c0fcda83e2e18b4de37fa3d47fd3de4042e3d02824e4a80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -283,6 +291,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_pagination:
+    dependency: "direct main"
+    description:
+      name: flutter_web_pagination
+      sha256: fac15a8c0d68905a82a43234b7943d3bcd01e81c08d1f25525cba099163a6a60
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

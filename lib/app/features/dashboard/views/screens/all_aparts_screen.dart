@@ -1,14 +1,11 @@
 import 'package:apartments/app/constans/app_constants.dart';
 import 'package:apartments/app/api/all_apartments.dart';
-import 'package:apartments/app/features/dashboard/views/screens/apartment_details.dart';
 import 'package:apartments/app/models/get_all_appart.dart';
-import 'package:apartments/app/providers/appartment_provider.dart';
 import 'package:apartments/app/shared_components/card_task.dart';
 import 'package:apartments/app/utils/animations/show_up_animation.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_web_pagination/flutter_web_pagination.dart';
 import 'package:get/get.dart';
 
 class AllApartmentsScreen extends StatefulWidget {
@@ -21,60 +18,89 @@ class AllApartmentsScreen extends StatefulWidget {
 class AllApartmentsScreenState extends State<AllApartmentsScreen> {
   RemoteApi remoteApi = RemoteApi();
 
+  final int _limit = 10; // Number of items per page
+  int _currentPage = 0;
+  late Future<ApartmentModelList> _futureApartmentModelList;
+
+  @override
+  void initState() {
+    _futureApartmentModelList =
+        remoteApi.fetchDataFromAzure(_currentPage, _limit);
+    super.initState();
+  }
+
+  void _onPageChanged(int page) {
+    setState(() {
+      _currentPage = page;
+      _futureApartmentModelList =
+          remoteApi.fetchDataFromAzure(_currentPage, _limit);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    AppartDetailsListener profileDetailsListener =
-        Provider.of<AppartDetailsListener>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(kBorderRadius * 2),
-      child: SizedBox(
-        child: FutureBuilder<ApartmentModelList>(
-            future: remoteApi.fetchDataFromAzure(0, 2),
-            builder: (BuildContext context,
-                AsyncSnapshot<ApartmentModelList> snapshot) {
-              if (!snapshot.hasData) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 80.0),
-                    child: SizedBox(
-                      height: 40,
-                      width: 40,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  );
-                }
-              }
-              return ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                physics: const BouncingScrollPhysics(),
-                itemCount: snapshot.data!.apartmentModel.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: kSpacing / 2),
-                  child: ShowUp(
-                    delay: 400,
-                    child: InkWell(
-                      onTap: () async {
-                        await SPHelper.saveIDAptSharedPreference(
-                            snapshot.data!.apartmentModel[index].id.toString());
+      child: FutureBuilder<ApartmentModelList>(
+          future: _futureApartmentModelList,
+          builder: (BuildContext context,
+              AsyncSnapshot<ApartmentModelList> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              return Column(
+                children: [
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data!.apartmentModel.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: kSpacing / 2),
+                      child: ShowUp(
+                        delay: 400,
+                        child: InkWell(
+                          onTap: () async {
+                            await SPHelper.saveIDAptSharedPreference(snapshot
+                                .data!.apartmentModel[index].id
+                                .toString());
 
-                        Get.toNamed("/apartmentdetail");
-                      },
-                      child: CardTask(
-                        data: snapshot.data!.apartmentModel[index],
-                        primary: const Color.fromARGB(255, 105, 188, 255),
-                        onPrimary: Colors.white,
+                            Get.toNamed("/apartmentdetail");
+                          },
+                          child: CardTask(
+                            data: snapshot.data!.apartmentModel[index],
+                            primary: const Color.fromARGB(255, 105, 188, 255),
+                            onPrimary: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: WebPagination(
+                      currentPage: _currentPage,
+                      totalPage: 10, // Adjust according to your total pages
+                      displayItemCount: 3, // Number of pages to display
+                      onPageChanged: _onPageChanged,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                ],
               );
-
-              // return Container();
-            }),
-      ),
+            } else {
+              return const Center(child: Text('No data found'));
+            }
+            // return Container();
+          }),
     );
   }
 
