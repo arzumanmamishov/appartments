@@ -28,7 +28,7 @@ class _BottomNavbarState extends State<_BottomNavbar> {
         BottomNavigationBarItem(
           activeIcon: Icon(EvaIcons.checkmarkCircle2),
           icon: Icon(EvaIcons.checkmarkCircle),
-          label: "Mojno Potom",
+          label: "Clients",
         ),
         BottomNavigationBarItem(
           activeIcon: Icon(EvaIcons.settings),
