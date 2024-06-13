@@ -19,7 +19,7 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
   RemoteApi remoteApi = RemoteApi();
 
   final int _limit = 10; // Number of items per page
-  int _currentPage = 0;
+  int _currentPage = 1;
   late Future<ApartmentModelList> _futureApartmentModelList;
 
   @override
@@ -46,39 +46,52 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
           builder: (BuildContext context,
               AsyncSnapshot<ApartmentModelList> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                  child: SizedBox(
+                      height: 35,
+                      width: 35,
+                      child: Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )));
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               return Column(
                 children: [
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data!.apartmentModel.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: kSpacing / 2),
-                      child: ShowUp(
-                        delay: 400,
-                        child: InkWell(
-                          onTap: () async {
-                            await SPHelper.saveIDAptSharedPreference(snapshot
-                                .data!.apartmentModel[index].id
-                                .toString());
+                  if (snapshot.data!.apartmentModel.length <= 1) ...[
+                    const Text('No Kvartira found'),
+                  ] else ...[
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.apartmentModel.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding:
+                            const EdgeInsets.symmetric(vertical: kSpacing / 2),
+                        child: ShowUp(
+                          delay: 400,
+                          child: InkWell(
+                            onTap: () async {
+                              await SPHelper.saveIDAptSharedPreference(snapshot
+                                  .data!.apartmentModel[index].id
+                                  .toString());
 
-                            Get.toNamed("/apartmentdetail");
-                          },
-                          child: CardTask(
-                            data: snapshot.data!.apartmentModel[index],
-                            primary: const Color.fromARGB(255, 105, 188, 255),
-                            onPrimary: Colors.white,
+                              Get.toNamed("/apartmentdetail");
+                            },
+                            child: CardTask(
+                              data: snapshot.data!.apartmentModel[index],
+                              primary: const Color.fromARGB(255, 105, 188, 255),
+                              onPrimary: Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                   const SizedBox(
                     height: 25,
                   ),

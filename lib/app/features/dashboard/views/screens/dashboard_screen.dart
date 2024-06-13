@@ -98,6 +98,7 @@ class DashboardScreen extends GetView<DashboardController> {
                 Flexible(
                   flex: constraints.maxWidth > 1350 ? 3 : 4,
                   child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     controller: ScrollController(),
                     child: _buildSidebar(context),
                   ),
@@ -117,6 +118,7 @@ class DashboardScreen extends GetView<DashboardController> {
                 Flexible(
                   flex: 4,
                   child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     controller: ScrollController(),
                     child: const BuilFilterContent(
                         isActive: false, desktop: "desktop"),
