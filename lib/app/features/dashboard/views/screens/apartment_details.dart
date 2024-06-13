@@ -15,21 +15,25 @@ class _ApartmentDetailState extends State<ApartmentDetail> {
     return Scaffold(
         body: SafeArea(
             child: ResponsiveBuilder(mobileBuilder: (context, constraints) {
-      return const SingleChildScrollView(
+      return SingleChildScrollView(
           child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-        child: Column(
-          children: [],
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+        child: Center(
+          child: Container(
+              constraints: const BoxConstraints(maxWidth: 400),
+              padding: const EdgeInsets.only(top: 10),
+              child: const ApartmentDetailsSubScreen()),
         ),
       ));
     }, tabletBuilder: (context, constraints) {
       return SingleChildScrollView(
           controller: ScrollController(),
-          child: Container(
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: const Column(
-                children: [],
-              )));
+          child: Center(
+            child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                padding: const EdgeInsets.only(top: 10),
+                child: const ApartmentDetailsSubScreen()),
+          ));
     }, desktopBuilder: (context, constraints) {
       return SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -37,7 +41,7 @@ class _ApartmentDetailState extends State<ApartmentDetail> {
           child: Center(
             child: Container(
                 constraints: const BoxConstraints(maxWidth: 1000),
-                padding: const EdgeInsets.symmetric(vertical: 55),
+                padding: const EdgeInsets.only(top: 10),
                 child: const ApartmentDetailsSubScreen()),
           ));
     })));

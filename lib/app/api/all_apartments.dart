@@ -5,19 +5,23 @@ import 'package:dio/dio.dart';
 class RemoteApi {
   final Dio _dio = Dio();
 
-  Future<ApartmentModelList> fetchDataFromAzure(int page, int limit) async {
+  Future<ApartmentModelList> fetchDataFromAzure(int page, int limit,
+      {String? filter}) async {
     var url = 'https://realtor.azurewebsites.net/api/RentObjects/pagination';
     late ApartmentModelList apartmentModelList;
     print('started');
     try {
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
-
+      Map<String, dynamic> queryParameters = {
+        'page': page,
+        'count': limit,
+      };
+      if (filter != null && filter.isNotEmpty) {
+        queryParameters['filter'] = filter;
+      }
       Response response = await _dio.get(
         url,
-        queryParameters: {
-          'page': page,
-          'count': limit,
-        },
+        queryParameters: queryParameters,
         options: Options(
           headers: {'Authorization': 'Bearer $accessToken'},
         ),
@@ -31,17 +35,41 @@ class RemoteApi {
       return e.response!.data;
     }
   }
+
+  Future<bool> deleteApartDataFromAzure(
+    String apartmentId,
+  ) async {
+    var url = 'https://realtor.azurewebsites.net/api/RentObjects/$apartmentId';
+    print('started');
+    try {
+      final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
+      print(accessToken);
+
+      Response response = await _dio.delete(
+        url,
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+      final data = response.data;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('Apartment deleted successfully');
+      } else {
+        print('Failed to delete the apartment');
+      }
+      print(data);
+      return true;
+    } on DioError catch (e) {
+      return e.response!.data;
+    }
+  }
 }
 
-class PaginatedResponse {
-  final List<ApartmentModel> apartments;
-  final int totalItems;
 
-  PaginatedResponse({
-    required this.apartments,
-    required this.totalItems,
-  });
-}
+
+
+
+
 
 // workingremote api
 // Future<ApartmentModelList> fetchDataFromAzureHttp() async {

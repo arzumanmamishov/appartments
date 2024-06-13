@@ -53,6 +53,9 @@ class ApartmentModel {
       'phone': phone,
       'floor': floor,
       'photos': photos,
+      'status': status,
+      'createdData': createdData,
+      'updatedUser': updatedUser
     };
   }
 
@@ -71,6 +74,9 @@ class ApartmentModel {
       phone: map['phone'] as String,
       floor: map['floor'] as String,
       photos: List.from((map['photos'] as List)),
+      status: map['status'] as String,
+      createdData: map['createdData'] as String,
+      updatedUser: map['updatedUser'] as String,
     );
   }
 
