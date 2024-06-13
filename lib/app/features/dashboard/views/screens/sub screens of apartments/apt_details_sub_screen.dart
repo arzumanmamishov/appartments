@@ -2,7 +2,7 @@ import 'package:apartments/app/api/all_apartments.dart';
 import 'package:apartments/app/api/client_api.dart';
 import 'package:apartments/app/constans/app_constants.dart';
 import 'package:apartments/app/features/dashboard/views/components/responsive_raw_to_column.dart';
-import 'package:apartments/app/models/get_all_appart.dart';
+import 'package:apartments/app/models/get_all_appart_model.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';

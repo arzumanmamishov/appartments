@@ -26,7 +26,7 @@ class _MainMenu extends StatelessWidget {
         SelectionButtonData(
           activeIcon: EvaIcons.checkmarkCircle2,
           icon: EvaIcons.checkmarkCircle,
-          label: "Mojno Potom",
+          label: "Clients",
           totalNotif: 20,
         ),
         SelectionButtonData(

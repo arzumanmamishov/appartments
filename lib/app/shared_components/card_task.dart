@@ -1,4 +1,4 @@
-import 'package:apartments/app/models/get_all_appart.dart';
+import 'package:apartments/app/models/get_all_appart_model.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 
