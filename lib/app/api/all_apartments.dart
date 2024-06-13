@@ -16,12 +16,12 @@ class RemoteApi {
         'page': page,
         'count': limit,
       };
-      if (filter != null && filter.isNotEmpty) {
-        queryParameters['filter'] = filter;
-      }
+      // if (filter != null && filter.isNotEmpty) {
+      //   queryParameters['filter'] = filter;
+      // }
       Response response = await _dio.get(
         url,
-        // queryParameters: queryParameters,
+        queryParameters: queryParameters,
         options: Options(
           headers: {'Authorization': 'Bearer $accessToken'},
         ),
