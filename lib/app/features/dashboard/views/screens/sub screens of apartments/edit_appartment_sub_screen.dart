@@ -307,7 +307,7 @@ class _TextFormForAddingEditingAptState
         const SizedBox(
           height: 55,
         ),
-         ChooseImageForAppartment(apartmentPhotos),
+         ChooseImageForAppartment(null),
         const SizedBox(
           height: 55, 
         ),
