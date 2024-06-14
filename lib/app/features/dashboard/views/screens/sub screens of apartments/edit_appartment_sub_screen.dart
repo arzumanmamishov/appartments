@@ -7,8 +7,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-
+  
 class TextFormForAddingEditingApt extends StatefulWidget {
   const TextFormForAddingEditingApt({Key? key}) : super(key: key);
 
@@ -32,7 +31,7 @@ class _TextFormForAddingEditingAptState
   final TextEditingController phone = TextEditingController();
   final TextEditingController comments = TextEditingController();
   DateTime now = DateTime.now();
-  late ApartmentModel apartmentModel;
+  ApartmentModel apartmentModel = ApartmentModel();
   ApiClient apiClient = ApiClient();
 
   Future<bool> postData() async {
@@ -80,10 +79,23 @@ class _TextFormForAddingEditingAptState
       return false;
     }
   }
-
+ List <dynamic>?apartmentPhotos;
   getApartmentDetails() async {
+
     apartmentModel = await apiClient.fetchApartmentDetails();
     contactPerson.text = apartmentModel.contactPerson.toString();
+    address.text = apartmentModel.address.toString();
+    region.text = apartmentModel.region.toString();
+    city.text = apartmentModel.city.toString();
+    postalCode.text = apartmentModel.postalCode.toString();
+    price.text = apartmentModel.price.toString();
+    type.text = apartmentModel.type.toString();
+    description.text = apartmentModel.description.toString();
+    comments.text = apartmentModel.comment.toString();
+    phone.text = apartmentModel.phone.toString();
+    floor.text = apartmentModel.floor.toString();
+    apartmentPhotos = apartmentModel.photos;
+
   }
 
   @override
@@ -117,9 +129,10 @@ class _TextFormForAddingEditingAptState
           autovalidateMode: AutovalidateMode.onUserInteraction,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
+          
           keyboardType: TextInputType.multiline,
           style: const TextStyle(
-              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Contact Person'),
           // onChanged: (val) {
           //   contactPerson.text = val;
@@ -129,36 +142,39 @@ class _TextFormForAddingEditingAptState
           height: 15,
         ),
         TextFormField(
+          controller: address,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
           keyboardType: TextInputType.multiline,
           style: const TextStyle(
-              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Address'),
-          onChanged: (val) {
-            address.text = val;
-          },
+          // onChanged: (val) {
+          //   address.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller: city,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
           keyboardType: TextInputType.multiline,
           style: const TextStyle(
-              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+              fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('City'),
-          onChanged: (val) {
-            city.text = val;
-          },
+          // onChanged: (val) {
+          //   city.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller: region,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
@@ -166,14 +182,15 @@ class _TextFormForAddingEditingAptState
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Region'),
-          onChanged: (val) {
-            region.text = val;
-          },
+          // onChanged: (val) {
+          //   region.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller:postalCode ,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
@@ -181,14 +198,15 @@ class _TextFormForAddingEditingAptState
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Postal Code'),
-          onChanged: (val) {
-            postalCode.text = val;
-          },
+          // onChanged: (val) {
+          //   postalCode.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller:price ,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
@@ -200,14 +218,15 @@ class _TextFormForAddingEditingAptState
                 FontAwesomeIcons.dollarSign,
                 color: Colors.grey,
               )),
-          onChanged: (val) {
-            price.text = val;
-          },
+          // onChanged: (val) {
+          //   price.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller:type ,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
@@ -215,14 +234,15 @@ class _TextFormForAddingEditingAptState
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Type'),
-          onChanged: (val) {
-            type.text = val;
-          },
+          // onChanged: (val) {
+          //   type.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller: description,
           maxLines: 5,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
@@ -231,14 +251,15 @@ class _TextFormForAddingEditingAptState
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Description'),
-          onChanged: (val) {
-            description.text = val;
-          },
+          // onChanged: (val) {
+          //   description.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller: floor,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
@@ -246,14 +267,15 @@ class _TextFormForAddingEditingAptState
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Floor'),
-          onChanged: (val) {
-            floor.text = val;
-          },
+          // onChanged: (val) {
+          //   floor.text = val;
+          // },
         ),
         const SizedBox(
           height: 15,
         ),
         TextFormField(
+          controller: phone,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
           autofocus: false,
@@ -269,6 +291,7 @@ class _TextFormForAddingEditingAptState
           height: 15,
         ),
         TextFormField(
+          controller: comments,
           maxLines: 3,
           autovalidateMode: AutovalidateMode.always,
           textCapitalization: TextCapitalization.sentences,
@@ -284,11 +307,10 @@ class _TextFormForAddingEditingAptState
         const SizedBox(
           height: 55,
         ),
-        const ChooseImageForAppartment(null),
+         ChooseImageForAppartment(apartmentPhotos),
         const SizedBox(
-          height: 55,
+          height: 55, 
         ),
-        // ignore: sized_box_for_whitespace
         Container(
           width: 250,
           height: 40,
