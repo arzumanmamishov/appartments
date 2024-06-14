@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:apartments/app/features/dashboard/controllers/authcontroller.dart';
 import 'package:apartments/app/features/dashboard/views/screens/apartment_details.dart';
 import 'package:apartments/app/features/dashboard/views/screens/dashboard_screen.dart';
+import 'package:apartments/app/features/dashboard/views/screens/edit_appartment_screen.dart';
+import 'package:apartments/app/features/dashboard/views/screens/sub%20screens%20of%20apartments/edit_appartment_sub_screen.dart';
 import 'package:apartments/app/features/dashboard/views/screens/home_page.dart';
 import 'package:apartments/app/features/dashboard/views/screens/second_page.dart';
 import 'package:apartments/app/utils/helpers/navigation_services.dart';
@@ -72,6 +74,9 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: '/', page: () => const DashboardScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
         GetPage(name: '/apartmentdetail', page: () => const ApartmentDetail()),
+        GetPage(
+            name: '/editingApartmentst',
+            page: () => const ApartmentEditDetail()),
         GetPage(
           name: '/second',
           page: () => const SecondPage(),

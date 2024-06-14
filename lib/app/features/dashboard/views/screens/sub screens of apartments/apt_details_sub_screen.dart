@@ -1,6 +1,5 @@
-import 'package:apartments/app/api/all_apartments.dart';
+import 'package:apartments/app/api/all_apartments_api.dart';
 import 'package:apartments/app/api/client_api.dart';
-import 'package:apartments/app/constans/app_constants.dart';
 import 'package:apartments/app/features/dashboard/views/components/responsive_raw_to_column.dart';
 import 'package:apartments/app/models/get_all_appart_model.dart';
 import 'package:apartments/app/utils/services/shared_preferences.dart';
@@ -331,6 +330,28 @@ class _ApartmentDetailsSubScreenState extends State<ApartmentDetailsSubScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 45,
+                  ),
+                  SizedBox(
+                      width: 240,
+                      height: 50,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 188, 2),
+                          ),
+                          onPressed: () {
+                            Get.toNamed('/editingApartmentst',
+                                preventDuplicates: false);
+                          },
+                          child: const Text(
+                            'Edit',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
+                          ))),
                   const SizedBox(
                     height: 55,
                   )

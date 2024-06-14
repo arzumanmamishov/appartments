@@ -1,5 +1,5 @@
 import 'package:apartments/app/constans/app_constants.dart';
-import 'package:apartments/app/api/all_apartments.dart';
+import 'package:apartments/app/api/all_apartments_api.dart';
 import 'package:apartments/app/models/get_all_appart_model.dart';
 import 'package:apartments/app/shared_components/card_task.dart';
 import 'package:apartments/app/utils/animations/show_up_animation.dart';
@@ -79,8 +79,8 @@ class AllApartmentsScreenState extends State<AllApartmentsScreen> {
                               await SPHelper.saveIDAptSharedPreference(snapshot
                                   .data!.apartmentModel[index].id
                                   .toString());
-
-                              Get.toNamed("/apartmentdetail");
+                              Get.toNamed('/apartmentdetail',
+                                  preventDuplicates: false);
                             },
                             child: CardTask(
                               data: snapshot.data!.apartmentModel[index],
