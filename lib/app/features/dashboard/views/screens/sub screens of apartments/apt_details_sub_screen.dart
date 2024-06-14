@@ -80,14 +80,11 @@ class _ApartmentDetailsSubScreenState extends State<ApartmentDetailsSubScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                            onTap: () => Get.back(),
-                            child: const SizedBox(
-                              child: FaIcon(
-                                FontAwesomeIcons.arrowLeftLong,
-                                color: Colors.black,
-                                size: 18,
-                              ),
+                          const SizedBox(
+                            child: FaIcon(
+                              FontAwesomeIcons.arrowLeftLong,
+                              color: Colors.black,
+                              size: 18,
                             ),
                           ),
                           const Text(
@@ -342,7 +339,7 @@ class _ApartmentDetailsSubScreenState extends State<ApartmentDetailsSubScreen> {
                                 const Color.fromARGB(255, 255, 188, 2),
                           ),
                           onPressed: () {
-                            Get.toNamed('/editingApartmentst',
+                            Get.toNamed('/editingApartments',
                                 preventDuplicates: false);
                           },
                           child: const Text(

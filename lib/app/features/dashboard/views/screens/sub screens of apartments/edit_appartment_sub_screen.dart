@@ -7,6 +7,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class TextFormForAddingEditingApt extends StatefulWidget {
   const TextFormForAddingEditingApt({Key? key}) : super(key: key);
@@ -63,7 +64,7 @@ class _TextFormForAddingEditingAptState
         "photos": listOfImages,
       };
 
-      Response response = await _dio.put(
+      final response = await _dio.put(
         url,
         data: data,
         options: Options(
@@ -310,7 +311,7 @@ class _TextFormForAddingEditingAptState
                     color: Colors.black,
                     fontWeight: FontWeight.w600),
               )),
-        )
+        ),
       ],
     );
   }

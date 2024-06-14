@@ -9,7 +9,6 @@ class RemoteApi {
       {String? filter}) async {
     var url = 'https://realtor.azurewebsites.net/api/RentObjects/pagination';
     late ApartmentModelList apartmentModelList;
-    print('started');
     try {
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
       Map<String, dynamic> queryParameters = {
@@ -27,7 +26,6 @@ class RemoteApi {
         ),
       );
       final data = response.data;
-      print(data);
       apartmentModelList = ApartmentModelList.fromJson(data);
 
       return apartmentModelList;
@@ -40,7 +38,7 @@ class RemoteApi {
     String apartmentId,
   ) async {
     var url = 'https://realtor.azurewebsites.net/api/RentObjects/$apartmentId';
-    print('started');
+
     try {
       final accessToken = await SPHelper.getTokenSharedPreference() ?? '';
       print(accessToken);
@@ -53,11 +51,7 @@ class RemoteApi {
       );
       final data = response.data;
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Apartment deleted successfully');
-      } else {
-        print('Failed to delete the apartment');
-      }
-      print(data);
+      } else {}
       return true;
     } on DioError catch (e) {
       return e.response!.data;

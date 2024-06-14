@@ -3,15 +3,12 @@ import 'package:apartments/app/features/dashboard/controllers/authcontroller.dar
 import 'package:apartments/app/features/dashboard/views/screens/apartment_details.dart';
 import 'package:apartments/app/features/dashboard/views/screens/dashboard_screen.dart';
 import 'package:apartments/app/features/dashboard/views/screens/edit_appartment_screen.dart';
-import 'package:apartments/app/features/dashboard/views/screens/sub%20screens%20of%20apartments/edit_appartment_sub_screen.dart';
-import 'package:apartments/app/features/dashboard/views/screens/home_page.dart';
+
 import 'package:apartments/app/features/dashboard/views/screens/second_page.dart';
 import 'package:apartments/app/utils/helpers/navigation_services.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:provider/provider.dart';
 
-import 'app/api/client_api.dart';
-import 'app/config/routes/app_pages.dart';
 import 'app/config/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,14 +20,30 @@ import 'app/utils/services/auth_services.dart';
 class AuthMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    // Use await to wait for the asynchronous result
     AuthService.isAuthenticated().then((isAuthenticated) {
       if (!isAuthenticated) {
         Get.offNamed('/login');
       }
     });
-    // Return null immediately since the redirection will be handled asynchronously
     return null;
+  }
+}
+
+class MyNavigatorObserver extends NavigatorObserver {
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    print(
+        'didPop: ${route.settings.name}, previousRoute: ${previousRoute?.settings.name}');
+    // Custom behavior on pop
+  }
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    super.didPush(route, previousRoute);
+    print(
+        'didPush: ${route.settings.name}, previousRoute: ${previousRoute?.settings.name}');
+    // Custom behavior on push
   }
 }
 
@@ -71,11 +84,15 @@ class _MyAppState extends State<MyApp> {
       theme: AppTheme.basic,
       initialRoute: authController.isAuthenticated.value ? '/' : '/login',
       getPages: [
-        GetPage(name: '/', page: () => const DashboardScreen()),
+        GetPage(
+          name: '/',
+          page: () => const DashboardScreen(),
+          middlewares: [AuthMiddleware()],
+        ),
         GetPage(name: '/login', page: () => const LoginScreen()),
         GetPage(name: '/apartmentdetail', page: () => const ApartmentDetail()),
         GetPage(
-            name: '/editingApartmentst',
+            name: '/editingApartments',
             page: () => const ApartmentEditDetail()),
         GetPage(
           name: '/second',
@@ -85,7 +102,7 @@ class _MyAppState extends State<MyApp> {
       ],
       scrollBehavior: CustomScrollBehaviour(),
       builder: BotToastInit(),
-      navigatorObservers: [BotToastNavigatorObserver()],
+      navigatorObservers: [BotToastNavigatorObserver(), MyNavigatorObserver()],
       debugShowCheckedModeBanner: false,
     );
   }
