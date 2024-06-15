@@ -1,4 +1,4 @@
-import 'package:apartments/app/models/get_all_appart.dart';
+import 'package:apartments/app/models/get_all_appart_model.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -19,59 +19,74 @@ class CardTask extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Material(
-        child: InkWell(
-          onTap: () {},
-          child: Container(
-            width: 250,
-            height: 250,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [primary, primary.withOpacity(.7)],
-                begin: AlignmentDirectional.topCenter,
-                end: AlignmentDirectional.bottomCenter,
-              ),
+        child: Container(
+          width: 250,
+          height: 200,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [primary, primary.withOpacity(.7)],
+              begin: AlignmentDirectional.topCenter,
+              end: AlignmentDirectional.bottomCenter,
             ),
-            child: _BackgroundDecoration(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 120,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              _buildLabel(),
-                              const SizedBox(height: 20),
-                              _buildJobdesk(),
-                            ],
+          ),
+          child: _BackgroundDecoration(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Container(
+                    width: 200,
+                    child: AspectRatio(
+                      aspectRatio: 3 / 9,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image(
+                          image: NetworkImage(
+                            data.photos!.first.toString(),
                           ),
+                          fit: BoxFit.cover,
                         ),
-                        const Spacer(flex: 1),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 120,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            _buildDate(),
-                            SizedBox(
-                              height: 20,
-                              child: VerticalDivider(
-                                thickness: 1,
-                                color: onPrimary,
-                              ),
-                            ),
-                            _buildHours(),
+                            _buildLabel(),
+                            const SizedBox(height: 20),
+                            _buildJobdesk(),
                           ],
                         ),
-                        const Spacer(flex: 2),
-                        _doneButton(),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      const Spacer(flex: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildDate(),
+                          SizedBox(
+                            height: 20,
+                            child: VerticalDivider(
+                              thickness: 1,
+                              color: onPrimary,
+                            ),
+                          ),
+                          _buildHours(),
+                        ],
+                      ),
+                      const Spacer(flex: 2),
+                      _doneButton(),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -89,7 +104,7 @@ class CardTask extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               child: Image.network(
-                data.city,
+                data.city ?? '',
                 fit: BoxFit.contain,
                 height: 150.0,
                 width: 150.0,
@@ -101,9 +116,9 @@ class CardTask extends StatelessWidget {
 
   Widget _buildLabel() {
     return Text(
-      data.city,
+      data.city ?? '',
       style: TextStyle(
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: FontWeight.w800,
         color: onPrimary,
         letterSpacing: 1,
@@ -121,7 +136,7 @@ class CardTask extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Text(
-        data.contactPerson,
+        data.contactPerson ?? '',
         style: TextStyle(
           color: onPrimary,
           fontSize: 10,
@@ -137,7 +152,7 @@ class CardTask extends StatelessWidget {
     return _IconLabel(
       color: onPrimary,
       iconData: EvaIcons.calendarOutline,
-      label: '12.12.2024',
+      label: data.createdData.toString(),
     );
   }
 
@@ -145,7 +160,7 @@ class CardTask extends StatelessWidget {
     return _IconLabel(
       color: onPrimary,
       iconData: EvaIcons.clockOutline,
-      label: data.phone,
+      label: data.phone ?? '',
     );
   }
 

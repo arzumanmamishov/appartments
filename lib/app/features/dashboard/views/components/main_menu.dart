@@ -20,19 +20,19 @@ class _MainMenu extends StatelessWidget {
         SelectionButtonData(
           activeIcon: EvaIcons.bell,
           icon: EvaIcons.bellOutline,
-          label: "Apartments",
+          label: "Add Apartment",
           totalNotif: 100,
         ),
         SelectionButtonData(
           activeIcon: EvaIcons.checkmarkCircle2,
           icon: EvaIcons.checkmarkCircle,
-          label: "Mojno Potom",
+          label: "Clients",
           totalNotif: 20,
         ),
         SelectionButtonData(
           activeIcon: EvaIcons.settings,
           icon: EvaIcons.settingsOutline,
-          label: "Settings",
+          label: "Log out",
         ),
       ],
       onSelected: onSelected,
