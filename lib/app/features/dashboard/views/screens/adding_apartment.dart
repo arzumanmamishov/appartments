@@ -13,6 +13,30 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
+
+var types = [
+    "1 кімнатна",
+    "2 кімнатна",
+    "3 кімнатна",
+    "4 кімнатна",
+    "Студія",
+    "Приватний будинок",
+    "Частина будинку",
+  ];
+
+var regions = [
+  "Галицький",
+  "Залізничний",
+  "Личаківський",
+  "Франківський",
+  "Шевченківський",
+  "Сихівський",
+];
+
+var cities = [
+  "Львів",
+];
+
 class AddingNewApartment extends StatefulWidget {
   const AddingNewApartment({Key? key}) : super(key: key);
 
@@ -212,32 +236,42 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
         const SizedBox(
           height: 15,
         ),
-        TextFormField(
+        DropdownButtonFormField<String>(
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          textCapitalization: TextCapitalization.sentences,
           autofocus: false,
-          keyboardType: TextInputType.multiline,
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
           decoration: decorationForTextFormField('City'),
           onChanged: (val) {
-            city.text = val;
+            city.text = val!;
           },
+          items: cities.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          value: cities[0],
         ),
         const SizedBox(
           height: 15,
         ),
-        TextFormField(
+        DropdownButtonFormField<String>(
           autovalidateMode: AutovalidateMode.always,
-          textCapitalization: TextCapitalization.sentences,
           autofocus: false,
-          keyboardType: TextInputType.multiline,
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Region'),
           onChanged: (val) {
-            region.text = val;
+            region.text = val!;
           },
+          items: regions.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          value: regions[0],
         ),
         const SizedBox(
           height: 15,
@@ -276,17 +310,22 @@ class _TextFormForAddingNewAptState extends State<TextFormForAddingNewApt> {
         const SizedBox(
           height: 15,
         ),
-        TextFormField(
+        DropdownButtonFormField<String>(
           autovalidateMode: AutovalidateMode.always,
-          textCapitalization: TextCapitalization.sentences,
           autofocus: false,
-          keyboardType: TextInputType.multiline,
           style: const TextStyle(
               fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600),
           decoration: decorationForTextFormField('Type'),
           onChanged: (val) {
-            type.text = val;
+            type.text = val!;
           },
+          items: types.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          value: types[0],
         ),
         const SizedBox(
           height: 15,
